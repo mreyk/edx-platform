@@ -1,0 +1,32 @@
+{
+  "start": [
+    0,
+    260,
+    1510,
+    4480,
+    7430,
+    8400,
+    11120,
+    14290
+  ],
+  "end": [
+    260,
+    1510,
+    4480,
+    7430,
+    8400,
+    11120,
+    14290,
+    16650
+  ],
+  "text": [
+    "",
+    "Welcome to edX.",
+    "I'm Anant Agarwal, I'm the president of edX,",
+    "I'm also a professor of electrical engineering and computer science",
+    "at MIT.",
+    "This is fun, this is exciting, and this is revolutionary.",
+    "Welcome to edX, come join us.",
+    ""
+  ]
+}
