@@ -1234,6 +1234,7 @@ proctoring_js = (
 # RequireJS and an optimizer.
 base_vendor_js = [
     'js/vendor/jquery.min.js',
+    'js/vendor/jquery-migrate.min.js',
     'js/vendor/jquery.cookie.js',
     'js/vendor/url.min.js',
     'js/vendor/underscore-min.js',
@@ -1340,6 +1341,7 @@ ccx_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/ccx/**/*.js'))
 
 certificates_web_view_js = [
     'js/vendor/jquery.min.js',
+    'js/vendor/jquery-migrate.min.js',
     'js/vendor/jquery.cookie.js',
     'js/src/logger.js',
     'js/utils/facebook.js',
@@ -1347,6 +1349,7 @@ certificates_web_view_js = [
 
 credit_web_view_js = [
     'js/vendor/jquery.min.js',
+    'js/vendor/jquery-migrate.min.js',
     'js/vendor/jquery.cookie.js',
     'js/src/logger.js',
 ]
