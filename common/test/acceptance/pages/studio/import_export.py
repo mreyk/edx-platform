@@ -166,7 +166,7 @@ class ImportMixin(object):
         Wait for the upload button to appear.
         """
         return EmptyPromise(
-            lambda: self.q(css='#replace-courselike-button')[0],
+            lambda: self.q(css='#replace-courselike-button').visible,
             "Upload button appears",
             timeout=30
         ).fulfill()

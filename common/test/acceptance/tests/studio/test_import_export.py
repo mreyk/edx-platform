@@ -4,6 +4,7 @@ Acceptance tests for the Import and Export pages
 from nose.plugins.attrib import attr
 from datetime import datetime
 
+from flaky import flaky
 from abc import abstractmethod
 from bok_choy.promise import EmptyPromise
 
@@ -162,6 +163,7 @@ class TestCourseBadExport(BadExportMixin, StudioCourseTest):
         )
 
 
+@flaky(max_runs=20, min_passes=20)
 @attr('shard_7')
 class ImportTestMixin(object):
     """
