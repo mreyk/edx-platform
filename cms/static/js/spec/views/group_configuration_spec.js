@@ -458,19 +458,6 @@ define([
             AjaxHelpers.expectNoRequests(requests);
         });
 
-        it('should have appropriate class names on focus/blur', function () {
-            var groupInput = this.view.$(SELECTORS.inputGroupName).first(),
-                groupFields = this.view.$(SELECTORS.groupFields);
-
-            groupInput.focus();
-            expect(groupFields).toHaveClass('is-focused');
-
-            // The blur event handler is only being called when the test is run in dev mode
-            // (after JQuery upgrade).
-            // groupInput.blur();
-            // expect(groupFields).not.toHaveClass('is-focused');
-        });
-
         describe('removes all newly created groups on cancel', function () {
             it('if the model has a non-empty groups', function() {
                 var groups = this.model.get('groups');
