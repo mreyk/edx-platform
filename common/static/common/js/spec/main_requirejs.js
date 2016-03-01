@@ -3,6 +3,7 @@
         paths: {
             'gettext': 'js/test/i18n',
             'jquery': 'js/vendor/jquery.min',
+            'jquery-migrate': 'js/vendor/jquery-migrate.min',
             'jquery.ui': 'js/vendor/jquery-ui.min',
             'jquery.flot': 'js/vendor/flot/jquery.flot.min',
             'jquery.form': 'js/vendor/jquery.form',
@@ -38,6 +39,7 @@
             'gettext': {
                 exports: 'gettext'
             },
+            "jquery-migrate": ['jquery'],
             'jquery.ui': {
                 deps: ['jquery'],
                 exports: 'jQuery.ui'
@@ -152,6 +154,10 @@
             }
         }
     });
+
+    // None of the common source files require jquery-migrate
+    // (it is loaded by LMS via base_vendor_js, and CMS by common_libraries).
+    require(['jquery-migrate']);
 
     define([
         // Run the common tests that use RequireJS.

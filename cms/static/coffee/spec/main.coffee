@@ -214,6 +214,9 @@ requirejs.config({
 
 jasmine.getFixtures().fixturesPath += 'coffee/fixtures'
 
+# None of the CMS source files require jquery-migrate (it is instead required by common_libraries.js via build.js).
+require(['jquery-migrate']);
+
 define([
     "coffee/spec/main_spec",
 

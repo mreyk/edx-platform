@@ -4,6 +4,7 @@ requirejs.config({
         "mustache": "xmodule_js/common_static/js/vendor/mustache",
         "codemirror": "xmodule_js/common_static/js/vendor/CodeMirror/codemirror",
         "jquery": "xmodule_js/common_static/js/vendor/jquery.min",
+        "jquery-migrate": "xmodule_js/common_static/js/vendor/jquery-migrate.min",
         "jquery.ui": "xmodule_js/common_static/js/vendor/jquery-ui.min",
         "jquery.form": "xmodule_js/common_static/js/vendor/jquery.form",
         "jquery.markitup": "xmodule_js/common_static/js/vendor/markitup/jquery.markitup",
@@ -54,6 +55,7 @@ requirejs.config({
         "date": {
             exports: "Date"
         },
+        "jquery-migrate": ['jquery'],
         "jquery.ui": {
             deps: ["jquery"],
             exports: "jQuery.ui"
@@ -181,6 +183,9 @@ requirejs.config({
 });
 
 jasmine.getFixtures().fixturesPath += 'coffee/fixtures'
+
+# None of the CMS source files require jquery-migrate (it is instead required by common_libraries.js via build.js).
+require(['jquery-migrate']);
 
 define([
     "coffee/spec/views/assets_spec",

@@ -636,6 +636,10 @@
         }
     });
 
+    // None of the lms source files require jquery-migrate (it is loaded by LMS via base_vendor_js).
+    require(['jquery-migrate']);
+
+
     // TODO: why do these need 'lms/include' at the front but the CMS equivalent logic doesn't?
     define([
         // Run the LMS tests

@@ -41,6 +41,7 @@ lib_paths:
     - common_static/js/vendor/require.js
     - RequireJS-namespace-undefine.js
     - common_static/js/vendor/jquery.min.js
+    - common_static/js/vendor/jquery-migrate.min.js
     - common_static/js/vendor/jquery-ui.min.js
     - common_static/js/vendor/jquery.ui.draggable.js
     - common_static/js/vendor/jquery.cookie.js
