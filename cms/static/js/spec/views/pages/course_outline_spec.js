@@ -263,6 +263,7 @@ define(["jquery", "common/js/spec_helpers/ajax_helpers", "common/js/components/u
                 $("#start_date").datepicker( "destroy" );
                 $("#due_date").datepicker( "destroy" );
                 $('.ui-datepicker').remove();
+                delete window.course;
             });
 
             describe('Initial display', function() {
