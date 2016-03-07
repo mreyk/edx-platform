@@ -33,7 +33,10 @@
             'jasmine-stealth': 'js/vendor/jasmine-stealth',
             'jasmine.async': 'js/vendor/jasmine.async',
             'URI': 'js/vendor/URI.min',
-            'draggabilly': 'js/vendor/draggabilly.pkgd'
+            'modernizr': 'js/vendor/afontgarde/modernizr.fontface-generatedcontent',
+            'afontgarde': 'js/vendor/afontgarde/afontgarde',
+            'edxicons': 'js/vendor/afontgarde/edx-icons',
+            'draggabilly': 'js/vendor/draggabilly'
         },
         shim: {
             'gettext': {
@@ -150,6 +153,21 @@
             },
             "sinon": {
                 exports: "sinon"
+            },
+            "modernizr": {
+                exports: "Modernizr"
+            },
+            "afontgarde": {
+                deps: ["jquery", "modernizr"],
+                exports: "AFontGarde"
+            },
+            "edxicons": {
+                deps: ["jquery", "modernizr", "afontgarde"],
+                exports: "edxicons"
+            },
+            "draggabilly": {
+                deps: ["jquery"],
+                exports: "Draggabilly"
             }
         }
     });

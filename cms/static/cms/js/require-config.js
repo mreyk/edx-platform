@@ -63,10 +63,13 @@
             "xblock": "coffee/src/xblock",
             "utility": "js/src/utility",
             "accessibility": "js/src/accessibility_tools",
-            "draggabilly": "js/vendor/draggabilly.pkgd",
             "URI": "js/vendor/URI.min",
             "ieshim": "js/src/ie_shim",
             "tooltip_manager": "js/src/tooltip_manager",
+            "modernizr": "js/vendor/afontgarde/modernizr.fontface-generatedcontent",
+            "afontgarde": "js/vendor/afontgarde/afontgarde",
+            "edxicons": "js/vendor/afontgarde/edx-icons",
+            "draggabilly": "js/vendor/draggabilly",
 
             // Files needed for Annotations feature
             "annotator": "js/vendor/ova/annotator-full",
@@ -241,13 +244,27 @@
                 exports: "XBlock",
                 deps: ["xblock/core"]
             },
-
             "coffee/src/main": {
                 deps: ["coffee/src/ajax_prefix"]
             },
             "js/src/logger": {
                 exports: "Logger",
                 deps: ["coffee/src/ajax_prefix"]
+            },
+            "modernizr": {
+                exports: "Modernizr"
+            },
+            "afontgarde": {
+                deps: ["jquery", "modernizr"],
+                exports: "AFontGarde"
+            },
+            "edxicons": {
+                deps: ["jquery", "modernizr", "afontgarde"],
+                exports: "edxicons"
+            },
+            "draggabilly": {
+                deps: ["jquery"],
+                exports: "Draggabilly"
             },
 
             // the following are all needed for annotation tools
