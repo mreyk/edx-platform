@@ -278,7 +278,7 @@ html:not('.afontgarde') .icon-fallback-img {
       .video-error {
         padding: ($baseline / 5);
         background: black;
-        color: white;
+        color: white !important; // the pattern library headings shim is more scoped
       }
 
       object,
