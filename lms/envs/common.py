@@ -2000,6 +2000,9 @@ INSTALLED_APPS = (
 
     # API access administration
     'openedx.core.djangoapps.api_admin',
+
+    # Learner's dashboard
+    'learner_dashboard',
 )
 
 # Migrations which are not in the standard module "migrations"

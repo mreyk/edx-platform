@@ -1,34 +1,10 @@
-"""Mixins for use during testing."""
+'''
+The Mixins used for unit tests for learner dashboard
+'''
+import httpretty
 import json
 
-import httpretty
-
 from openedx.core.djangoapps.programs.models import ProgramsApiConfig
-
-
-class ProgramsApiConfigMixin(object):
-    """Utilities for working with Programs configuration during testing."""
-
-    DEFAULTS = {
-        'enabled': True,
-        'api_version_number': 1,
-        'internal_service_url': 'http://internal.programs.org/',
-        'public_service_url': 'http://public.programs.org/',
-        'authoring_app_js_path': '/path/to/js',
-        'authoring_app_css_path': '/path/to/css',
-        'cache_ttl': 0,
-        'enable_student_dashboard': True,
-        'enable_studio_tab': True,
-        'enable_certification': True,
-        'xseries_ad_enabled': True,
-    }
-
-    def create_programs_config(self, **kwargs):
-        """Creates a new ProgramsApiConfig with DEFAULTS, updated with any provided overrides."""
-        fields = dict(self.DEFAULTS, **kwargs)
-        ProgramsApiConfig(**fields).save()
-
-        return ProgramsApiConfig.current()
 
 
 class ProgramsDataMixin(object):
@@ -39,14 +15,14 @@ class ProgramsDataMixin(object):
     ]
 
     COURSE_KEYS = [
-        'organization-a/course-a/fall',
-        'organization-a/course-a/winter',
-        'organization-a/course-b/fall',
-        'organization-a/course-b/winter',
-        'organization-b/course-c/fall',
-        'organization-b/course-c/winter',
-        'organization-b/course-d/fall',
-        'organization-b/course-d/winter',
+        ['Org0', 'Course0', 'Run0'],
+        ['Org0', 'Course0', 'Run1'],
+        ['Org0', 'Course1', 'Run0'],
+        ['Org0', 'Course1', 'Run1'],
+        ['Org1', 'Course2', 'Run0'],
+        ['Org1', 'Course2', 'Run1'],
+        ['Org1', 'Course3', 'Run0'],
+        ['Org1', 'Course3', 'Run1'],
     ]
 
     PROGRAMS_API_RESPONSE = {
@@ -57,59 +33,59 @@ class ProgramsDataMixin(object):
                 'subtitle': 'A program used for testing purposes',
                 'category': 'xseries',
                 'status': 'unpublished',
-                'marketing_slug': '',
+                'marketing_slug': '{}_test_url'.format(PROGRAM_NAMES[0].replace(' ', '_')),
                 'organizations': [
                     {
-                        'display_name': 'Test Organization A',
-                        'key': 'organization-a'
+                        'display_name': 'Test Organization 0',
+                        'key': 'organization-0'
                     }
                 ],
                 'course_codes': [
                     {
-                        'display_name': 'Test Course A',
-                        'key': 'course-a',
+                        'display_name': 'Test Course 0',
+                        'key': 'course-0',
                         'organization': {
-                            'display_name': 'Test Organization A',
-                            'key': 'organization-a'
+                            'display_name': 'Test Organization 0',
+                            'key': 'organization-0'
                         },
                         'run_modes': [
                             {
-                                'course_key': COURSE_KEYS[0],
+                                'course_key': '/'.join(COURSE_KEYS[0]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'fall'
+                                'run_key': '0'
                             },
                             {
-                                'course_key': COURSE_KEYS[1],
+                                'course_key': '/'.join(COURSE_KEYS[1]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'winter'
+                                'run_key': '1'
                             }
                         ]
                     },
                     {
-                        'display_name': 'Test Course B',
-                        'key': 'course-b',
+                        'display_name': 'Test Course 1',
+                        'key': 'course-1',
                         'organization': {
-                            'display_name': 'Test Organization A',
-                            'key': 'organization-a'
+                            'display_name': 'Test Organization 0',
+                            'key': 'organization-0'
                         },
                         'run_modes': [
                             {
-                                'course_key': COURSE_KEYS[2],
+                                'course_key': '/'.join(COURSE_KEYS[2]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'fall'
+                                'run_key': '0'
                             },
                             {
-                                'course_key': COURSE_KEYS[3],
+                                'course_key': '/'.join(COURSE_KEYS[3]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'winter'
+                                'run_key': '1'
                             }
                         ]
                     }
@@ -123,59 +99,59 @@ class ProgramsDataMixin(object):
                 'subtitle': 'Another program used for testing purposes',
                 'category': 'xseries',
                 'status': 'unpublished',
-                'marketing_slug': '',
+                'marketing_slug': '{}_test_url'.format(PROGRAM_NAMES[1].replace(' ', '_')),
                 'organizations': [
                     {
-                        'display_name': 'Test Organization B',
-                        'key': 'organization-b'
+                        'display_name': 'Test Organization 1',
+                        'key': 'organization-1'
                     }
                 ],
                 'course_codes': [
                     {
-                        'display_name': 'Test Course C',
-                        'key': 'course-c',
+                        'display_name': 'Test Course 2',
+                        'key': 'course-2',
                         'organization': {
-                            'display_name': 'Test Organization B',
-                            'key': 'organization-b'
+                            'display_name': 'Test Organization 1',
+                            'key': 'organization-1'
                         },
                         'run_modes': [
                             {
-                                'course_key': COURSE_KEYS[4],
+                                'course_key': '/'.join(COURSE_KEYS[4]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'fall'
+                                'run_key': '0'
                             },
                             {
-                                'course_key': COURSE_KEYS[5],
+                                'course_key': '/'.join(COURSE_KEYS[5]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'winter'
+                                'run_key': '1'
                             }
                         ]
                     },
                     {
-                        'display_name': 'Test Course D',
-                        'key': 'course-d',
+                        'display_name': 'Test Course 3',
+                        'key': 'course-3',
                         'organization': {
-                            'display_name': 'Test Organization B',
-                            'key': 'organization-b'
+                            'display_name': 'Test Organization 1',
+                            'key': 'organization-1'
                         },
                         'run_modes': [
                             {
-                                'course_key': COURSE_KEYS[6],
+                                'course_key': '/'.join(COURSE_KEYS[6]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'fall'
+                                'run_key': '0'
                             },
                             {
-                                'course_key': COURSE_KEYS[7],
+                                'course_key': '/'.join(COURSE_KEYS[7]),
                                 'mode_slug': 'verified',
                                 'sku': '',
                                 'start_date': '2015-11-05T07:39:02.791741Z',
-                                'run_key': 'winter'
+                                'run_key': '1'
                             }
                         ]
                     }
@@ -185,31 +161,6 @@ class ProgramsDataMixin(object):
             }
         ]
     }
-
-    PROGRAMS_CREDENTIALS_DATA = [
-        {
-            "id": 1,
-            "username": "test",
-            "credential": {
-                "credential_id": 1,
-                "program_id": 1
-            },
-            "status": "awarded",
-            "uuid": "dummy-uuid-1",
-            "certificate_url": "http://credentials.edx.org/credentials/dummy-uuid-1/"
-        },
-        {
-            "id": 2,
-            "username": "test",
-            "credential": {
-                "credential_id": 2,
-                "program_id": 2
-            },
-            "status": "awarded",
-            "uuid": "dummy-uuid-2",
-            "certificate_url": "http://credentials.edx.org/credentials/dummy-uuid-2/"
-        }
-    ]
 
     def mock_programs_api(self, data=None, status_code=200):
         """Utility for mocking out Programs API URLs."""
