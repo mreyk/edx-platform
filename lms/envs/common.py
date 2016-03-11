@@ -1979,6 +1979,9 @@ INSTALLED_APPS = (
 
     # Review widgets
     'openedx.core.djangoapps.coursetalk',
+
+    # Management commands used for configuration automation
+    'edx_management_commands.management_commands',
 )
 
 # Migrations which are not in the standard module "migrations"
