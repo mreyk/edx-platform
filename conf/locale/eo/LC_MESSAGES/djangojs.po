@@ -26,8 +26,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-03-24 17:48+0000\n"
-"PO-Revision-Date: 2016-03-24 17:49:46.856691\n"
+"POT-Creation-Date: 2016-03-28 18:36+0000\n"
+"PO-Revision-Date: 2016-03-28 18:37:40.451937\n"
 "Last-Translator: \n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1766,45 +1766,54 @@ msgid "Do not show again"
 msgstr "Dö nöt shöw ägäïn Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмє#"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Turn on closed captioning"
-msgstr "Türn ön çlöséd çäptïönïng Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Turn off transcript"
-msgstr "Türn öff tränsçrïpt Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
+msgid ""
+"<li>Transcript will be displayed when you start playing the video.</li>"
+msgstr ""
+"<li>Tränsçrïpt wïll ßé dïspläýéd whén ýöü stärt pläýïng thé vïdéö.</li> "
+"Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя #"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid ""
-"Language: Press the UP arrow key to enter the language menu, then use UP and"
-" DOWN arrow keys to navigate language options. Press ENTER to change to the "
+"Video transcript: activating an item in this group will spool the video to "
+"the corresponding time point."
+msgstr ""
+"Vïdéö tränsçrïpt: äçtïvätïng än ïtém ïn thïs gröüp wïll spööl thé vïdéö tö "
+"thé çörréspöndïng tïmé pöïnt. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "Video transcript"
+msgstr "Vïdéö tränsçrïpt Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "Start of transcript. Skip to the end."
+msgstr ""
+"Stärt öf tränsçrïpt. Skïp tö thé énd. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тєтυ#"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "End of transcript. Skip to the start."
+msgstr ""
+"Énd öf tränsçrïpt. Skïp tö thé stärt. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
+"¢σηѕє¢тєтυ#"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid ""
+"Language: Press the UP arrow key to enter the language menu then use UP and "
+"DOWN arrow keys to navigate language options. Press ENTER to change to the "
 "selected language."
 msgstr ""
-"Längüägé: Préss thé ÛP ärröw kéý tö éntér thé längüägé ménü, thén üsé ÛP änd"
-" DÖWN ärröw kéýs tö nävïgäté längüägé öptïöns. Préss ÉNTÉR tö çhängé tö thé "
+"Längüägé: Préss thé ÛP ärröw kéý tö éntér thé längüägé ménü thén üsé ÛP änd "
+"DÖWN ärröw kéýs tö nävïgäté längüägé öptïöns. Préss ÉNTÉR tö çhängé tö thé "
 "séléçtéd längüägé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α∂ιριѕι¢ιηg "
 "єłιт, ѕє∂ ∂σ єιυѕмσ∂ тємρσя ιη¢ι∂ι∂υηт υт łαвσяє єт ∂σłσяє мαgηα αłιqυα. υт "
 "єηιм α∂ мιηιм νєηιαм, qυιѕ ησѕтяυ∂ єχєя¢ιтαтιση υłłαм¢σ łαвσяιѕ ηιѕι υт "
 "αłιqυιρ єχ єα ¢σммσ∂σ ¢σηѕєqυαт. ∂υιѕ αυтє ιяυяє ∂σłσя ιη яєρяєнєη∂єяιт ιη "
 "νσłυρтαтє νєłιт єѕѕє ¢ιłłυм ∂σłσяє єυ ƒυgιαт ηυłłα ραяιαтυя. єχ¢єρтєυя ѕιηт "
-"σ¢¢αє¢αт ¢υρι∂αтαт ηση ρяσι∂єηт, ѕυηт ιη ¢υłρα qυι σ#"
+"σ¢¢αє¢αт ¢υρι∂αтαт ηση ρяσι∂єηт, ѕυηт ιη ¢υłρα qυι σƒ#"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Open language menu"
-msgstr "Öpén längüägé ménü Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid ""
-"Activating an item in this group will spool the video to the corresponding "
-"time point. To skip transcript, go to previous item."
-msgstr ""
-"Àçtïvätïng än ïtém ïn thïs gröüp wïll spööl thé vïdéö tö thé çörréspöndïng "
-"tïmé pöïnt. Tö skïp tränsçrïpt, gö tö prévïöüs ïtém. Ⱡ'σяє#"
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "<li>Transcript will be displayed when "
-msgstr ""
-"<li>Tränsçrïpt wïll ßé dïspläýéd whén  Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
-"¢σηѕє¢тєтυ#"
+msgid "Open langage menu."
+msgstr "Öpén längägé ménü. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Hide closed captions"
@@ -1815,6 +1824,10 @@ msgid "(Caption will be displayed when you start playing the video.)"
 msgstr ""
 "(Çäptïön wïll ßé dïspläýéd whén ýöü stärt pläýïng thé vïdéö.) Ⱡ'σяєм ιρѕυм "
 "∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α#"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "Turn on closed captioning"
+msgstr "Türn ön çlöséd çäptïönïng Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn on transcripts"

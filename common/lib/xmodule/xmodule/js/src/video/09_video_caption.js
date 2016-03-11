@@ -79,31 +79,20 @@
                         '<button class="control toggle-captions" aria-disabled="false">',
                             '<span class="icon-fallback-img">',
                                 '<span class="icon fa fa-cc" aria-hidden="true"></span>',
-                                '<span class="sr control-text">',
-                                    gettext('Turn on closed captioning'),
-                                '</span>',
+                                '<span class="sr control-text"></span>',
                             '</span>',
                         '</button>',
                         '<button class="control toggle-transcript" aria-disabled="false">',
                             '<span class="icon-fallback-img">',
                                 '<span class="icon fa fa-quote-left" aria-hidden="true"></span>',
-                                '<span class="sr control-text">',
-                                    gettext('Turn off transcript'),
-                                '</span>',
+                                '<span class="sr control-text"></span>',
                             '</span>',
                         '</button>',
                         '<div class="lang menu-container" role="application">',
-                            '<button class="control language-menu" aria-label="',
-                                /* jshint maxlen:300 */
-                                gettext('Language: Press the UP arrow key to enter the language ',
-                                'menu then use UP and DOWN arrow keys to navigate language options. ',
-                                'Press ENTER to change to the selected language.'),
-                                '" aria-disabled="false">',
+                            '<button class="control language-menu" aria-label="" aria-disabled="false">',
                                 '<span class="icon-fallback-img">',
                                     '<span class="icon fa fa-caret-left" aria-hidden="true"></span>',
-                                    '<span class="sr control-text">',
-                                        gettext('Open language menu'),
-                                    '</span>',
+                                    '<span class="sr control-text"></span>',
                                 '</span>',
                             '</button>',
                         '</div>',
@@ -111,19 +100,13 @@
                 ].join('');
 
                 var template = [
-                    '<div class="subtitles" role="region" aria-label="',
-                        /* jshint maxlen:300 */
-                        gettext('Video transcript: activating an item in this group will spool the video to the ',
-                        'corresponding time point.'),
-                        '" id="transcript-' + this.state.id + '">',
+                    '<div class="subtitles" role="region" id="transcript-' + this.state.id + '">',
                         '<a href="#transcript-end-' + this.state.id + '"',
-                        'id="transcript-start-' + this.state.id + '">Start of transcript. Skip to the end.</a>',
-                        '<h3 id="transcript-label-' + this.state.id + '" class="sr">',
-                            gettext('Video transcript'),
-                        '</h3>',
+                        'id="transcript-start-' + this.state.id + '" class="transcript-start"></a>',
+                        '<h3 id="transcript-label-' + this.state.id + '" class="transcript-title sr"></h3>',
                         '<ol id="transcript-captions" class="subtitles-menu"></ol>',
                         '<a href="#transcript-start-' + this.state.id + '"',
-                        'id="transcript-end-' + this.state.id + '">End of transcript. Skip to the start.</a>',
+                        'id="transcript-end-' + this.state.id + '" class="transcript-end">\</a>',
                     '</div>'
                 ].join('');
 
@@ -546,10 +529,7 @@
                         } else {
                             if (state.isTouch) {
                                 self.subtitlesEl.find('.subtitles-menu').html(
-                                    gettext(
-                                        '<li>Transcript will be displayed when ' +
-                                        'you start playing the video.</li>'
-                                    )
+                                    gettext('<li>Transcript will be displayed when you start playing the video.</li>')
                                 );
                             } else {
                                 self.renderCaption(start, captions);
@@ -757,6 +737,21 @@
                     self.isMouseFocus = false;
                     self.rendered = true;
                     self.state.el.addClass('is-captions-rendered');
+
+                    self.subtitlesEl.attr('aria-label', gettext('Video transcript: activating an item in this group will spool the video to the corresponding time point.')) // jshint ignore:line
+                        .find('.transcript-title')
+                            .html(gettext('Video transcript'));
+
+                    self.subtitlesEl.find('.transcript-start')
+                        .html(gettext('Start of transcript. Skip to the end.'));
+
+                    self.subtitlesEl.find('.transcript-end')
+                        .html(gettext('End of transcript. Skip to the start.'));
+
+                    self.container.find('.menu-container .control')
+                        .attr('aria-label', gettext('Language: Press the UP arrow key to enter the language menu then use UP and DOWN arrow keys to navigate language options. Press ENTER to change to the selected language.')) // jshint ignore:line
+                        .find('.control-text')
+                            .html(gettext('Open langage menu.'));
                 };
 
                 this.rendered = false;

@@ -26,8 +26,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1a\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2016-03-24 17:48+0000\n"
-"PO-Revision-Date: 2016-03-24 17:49:46.856691\n"
+"POT-Creation-Date: 2016-03-28 18:36+0000\n"
+"PO-Revision-Date: 2016-03-28 18:37:40.451937\n"
 "Last-Translator: \n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1750,38 +1750,44 @@ msgid "Do not show again"
 msgstr "يخ رخف ساخص شلشهر"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Turn on closed captioning"
-msgstr "فعقر خر ذمخسثي ذشحفهخرهرل"
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Turn off transcript"
-msgstr "فعقر خبب فقشرسذقهحف"
+msgid ""
+"<li>Transcript will be displayed when you start playing the video.</li>"
+msgstr ""
+"<li>فقشرسذقهحف صهمم زث يهسحمشغثي صاثر غخع سفشقف حمشغهرل فاث دهيثخ.</li>"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid ""
-"Language: Press the UP arrow key to enter the language menu, then use UP and"
-" DOWN arrow keys to navigate language options. Press ENTER to change to the "
+"Video transcript: activating an item in this group will spool the video to "
+"the corresponding time point."
+msgstr ""
+"دهيثخ فقشرسذقهحف: شذفهدشفهرل شر هفثو هر فاهس لقخعح صهمم سحخخم فاث دهيثخ فخ "
+"فاث ذخققثسحخريهرل فهوث حخهرف."
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "Video transcript"
+msgstr "دهيثخ فقشرسذقهحف"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "Start of transcript. Skip to the end."
+msgstr "سفشقف خب فقشرسذقهحف. سنهح فخ فاث ثري."
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "End of transcript. Skip to the start."
+msgstr "ثري خب فقشرسذقهحف. سنهح فخ فاث سفشقف."
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid ""
+"Language: Press the UP arrow key to enter the language menu then use UP and "
+"DOWN arrow keys to navigate language options. Press ENTER to change to the "
 "selected language."
 msgstr ""
-"مشرلعشلث: حقثسس فاث عح شققخص نثغ فخ ثرفثق فاث مشرلعشلث وثرع, فاثر عسث عح شري"
-" يخصر شققخص نثغس فخ رشدهلشفث مشرلعشلث خحفهخرس. حقثسس ثرفثق فخ ذاشرلث فخ فاث "
+"مشرلعشلث: حقثسس فاث عح شققخص نثغ فخ ثرفثق فاث مشرلعشلث وثرع فاثر عسث عح شري "
+"يخصر شققخص نثغس فخ رشدهلشفث مشرلعشلث خحفهخرس. حقثسس ثرفثق فخ ذاشرلث فخ فاث "
 "سثمثذفثي مشرلعشلث."
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "Open language menu"
-msgstr "خحثر مشرلعشلث وثرع"
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid ""
-"Activating an item in this group will spool the video to the corresponding "
-"time point. To skip transcript, go to previous item."
-msgstr ""
-"شذفهدشفهرل شر هفثو هر فاهس لقخعح صهمم سحخخم فاث دهيثخ فخ فاث ذخققثسحخريهرل "
-"فهوث حخهرف. فخ سنهح فقشرسذقهحف, لخ فخ حقثدهخعس هفثو."
-
-#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
-msgid "<li>Transcript will be displayed when "
-msgstr "<li>فقشرسذقهحف صهمم زث يهسحمشغثي صاثر "
+msgid "Open langage menu."
+msgstr "خحثر مشرلشلث وثرع."
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Hide closed captions"
@@ -1790,6 +1796,10 @@ msgstr "اهيث ذمخسثي ذشحفهخرس"
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "(Caption will be displayed when you start playing the video.)"
 msgstr "(ذشحفهخر صهمم زث يهسحمشغثي صاثر غخع سفشقف حمشغهرل فاث دهيثخ.)"
+
+#: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
+msgid "Turn on closed captioning"
+msgstr "فعقر خر ذمخسثي ذشحفهخرهرل"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn on transcripts"
