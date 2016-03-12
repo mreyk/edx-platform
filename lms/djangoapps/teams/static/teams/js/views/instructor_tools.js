@@ -1,14 +1,16 @@
-;(function (define) {
+;(function(define) {
     'use strict';
 
     define(['backbone',
             'underscore',
             'gettext',
             'edx-ui-toolkit/js/utils/string-utils',
+            'edx-ui-toolkit/js/utils/html-utils',
             'teams/js/views/team_utils',
             'common/js/components/utils/view_utils',
-            'text!teams/templates/instructor-tools.underscore'],
-        function (Backbone, _, gettext, StringUtils, TeamUtils, ViewUtils, instructorToolbarTemplate) {
+            'text!teams/templates/instructor-tools.underscore'
+        ],
+        function(Backbone, _, gettext, StringUtils, HtmlUtils, TeamUtils, ViewUtils, instructorToolbarTemplate) {
             return Backbone.View.extend({
 
                 events: {
@@ -27,27 +29,27 @@
                     return this;
                 },
 
-                deleteTeam: function (event) {
+                deleteTeam: function(event) {
                     event.preventDefault();
                     ViewUtils.confirmThenRunOperation(
                         gettext('Delete this team?'),
-                        gettext('Deleting a team is permanent and cannot be undone. All members are removed from the team, and team discussions can no longer be accessed.'),
+                        gettext('Deleting a team is permanent and cannot be undone. All members are removed from the team, and team discussions can no longer be accessed.'),  // jshint ignore:line
                         gettext('Delete'),
                         _.bind(this.handleDelete, this)
                     );
                 },
 
-                editMembership: function (event) {
+                editMembership: function(event) {
                     event.preventDefault();
                     Backbone.history.navigate(
-                        'teams/' + this.team.get('topic_id') + '/' + this.team.id +'/edit-team/manage-members',
+                        'teams/' + this.team.get('topic_id') + '/' + this.team.id + '/edit-team/manage-members',
                         {trigger: true}
                     );
                 },
 
-                handleDelete: function () {
+                handleDelete: function() {
                     var self = this,
-                        postDelete = function () {
+                        postDelete = function() {
                             self.teamEvents.trigger('teams:update', {
                                 action: 'delete',
                                 team: self.team
@@ -62,7 +64,7 @@
                                 'success'
                             );
                         };
-                    this.team.destroy().then(postDelete).fail(function (response) {
+                    this.team.destroy().then(postDelete).fail(function(response) {
                         // In the 404 case, this team has already been
                         // deleted by someone else. Since the team was
                         // successfully deleted anyway, just show a
