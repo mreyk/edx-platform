@@ -189,13 +189,13 @@
             showUploadInProgressMessage: function() {
                 this.$('.u-field-upload-button').css('opacity', 1);
                 HtmlUtils.setHtml(this.$('.upload-button-icon'), this.iconProgressHtml);
-                HtmlUtils.setHtml(this.$('.upload-button-title'), this.titleUploading);
+                this.$('.upload-button-title').text(this.titleUploading);
             },
 
             showRemovalInProgressMessage: function() {
                 this.$('.u-field-remove-button').css('opacity', 1);
                 HtmlUtils.setHtml(this.$('.remove-button-icon'), this.iconProgressHtml);
-                HtmlUtils.setHtml(this.$('.remove-button-title'), this.titleRemoving);
+                this.$('.remove-button-title').text(this.titleRemoving);
             },
 
             setCurrentStatus: function(status) {

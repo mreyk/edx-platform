@@ -19,8 +19,7 @@
 
                 render: function() {
                     var teamCount = this.model.get('team_count');
-                    HtmlUtils.setHtml(
-                        this.$el,
+                    this.$el.text(
                         StringUtils.interpolate(
                             ngettext('{team_count} Team', '{team_count} Teams', teamCount),
                             {team_count: teamCount}

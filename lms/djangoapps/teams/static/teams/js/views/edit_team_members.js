@@ -47,7 +47,7 @@
                         );
                     }
                     else {
-                        HtmlUtils.setHtml(this.$el, '<ul class="edit-members"></ul>');
+                        HtmlUtils.setHtml(this.$el, HtmlUtils.HTML('<ul class="edit-members"></ul>'));
                         this.renderTeamMembers();
                     }
                     return this;

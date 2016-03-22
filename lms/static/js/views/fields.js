@@ -290,7 +290,7 @@
             },
 
             updateValueInField: function () {
-                HtmlUtils.setHtml(this.$('.u-field-value '), this.modelValue());
+                this.$('.u-field-value ').text(this.modelValue());
             }
         });
 
@@ -429,7 +429,7 @@
                     value = this.options.placeholderValue || '';
                 }
                 this.$('.u-field-value').attr('aria-label', this.options.title);
-                HtmlUtils.setHtml(this.$('.u-field-value-readonly'), value);
+                this.$('.u-field-value-readonly').text(value);
 
                 if (this.mode === 'display') {
                     this.updateDisplayModeClass();
