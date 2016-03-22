@@ -1,10 +1,13 @@
 ;(function(define, undefined) {
     'use strict';
     define([
-        'gettext', 'jquery', 'underscore', 'backbone', 'js/views/fields', 'js/views/image_field',
+        'gettext', 'jquery', 'underscore', 'backbone',
         'edx-ui-toolkit/js/utils/html-utils',
+        'edx-ui-toolkit/js/utils/string-utils',
+        'js/views/fields',
+        'js/views/image_field',
         'backbone-super'
-    ], function(gettext, $, _, Backbone, FieldViews, ImageFieldView, HtmlUtils) {
+    ], function(gettext, $, _, Backbone, HtmlUtils, StringUtils, FieldViews, ImageFieldView) {
 
         var LearnerProfileFieldViews = {};
 
@@ -56,7 +59,7 @@
             },
 
             imageAltText: function() {
-                return HtmlUtils.interpolateHtml(
+                return StringUtils.interpolate(
                     gettext('Profile image for {username}'),
                     {username: this.model.get('username')}
                 );
