@@ -5,9 +5,10 @@
     'use strict';
     define([
             'backbone', 'underscore', 'gettext', 'js/components/card/views/card',
-            'edx-ui-toolkit/js/utils/html-utils'
+            'edx-ui-toolkit/js/utils/html-utils',
+            'edx-ui-toolkit/js/utils/string-utils'
         ],
-        function(Backbone, _, gettext, CardView, HtmlUtils) {
+        function(Backbone, _, gettext, CardView, HtmlUtils, StringUtils) {
             var TeamCountDetailView = Backbone.View.extend({
                 tagName: 'p',
                 className: 'team-count',
@@ -18,10 +19,13 @@
 
                 render: function() {
                     var teamCount = this.model.get('team_count');
-                    this.$el.html(HtmlUtils.interpolateHtml(
-                        ngettext('{team_count} Team', '{team_count} Teams', teamCount),
-                        {team_count: teamCount}
-                    ).toString());
+                    HtmlUtils.setHtml(
+                        this.$el,
+                        StringUtils.interpolate(
+                            ngettext('{team_count} Team', '{team_count} Teams', teamCount),
+                            {team_count: teamCount}
+                        )
+                    );
                     return this;
                 }
             });
@@ -43,15 +47,15 @@
                 description: function() { return this.model.get('description'); },
                 details: function() { return this.detailViews; },
                 actionClass: 'action-view',
-                actionContent: function() {
-                    var screenReaderText = HtmlUtils.interpolateHtml(
-                        gettext('View Teams in the {topic_name} Topic'),
-                        {topic_name: this.model.get('name')}
-                    );
-                    return HtmlUtils.HTML(
-                        '<span class="sr">' +
-                        screenReaderText +
-                        '</span><i class="icon fa fa-arrow-right" aria-hidden="true"></i>'
+                actionContentHtml: function() {
+                    return HtmlUtils.joinHtml(
+                        HtmlUtils.HTML('<span class="sr">'),
+                        StringUtils.interpolate(
+                            gettext('View Teams in the {topic_name} Topic'),
+                            {topic_name: this.model.get('name')}
+                        ),
+                        HtmlUtils.HTML('</span>'),
+                        HtmlUtils.HTML('<i class="icon fa fa-arrow-right" aria-hidden="true"></i>')
                     );
                 }
             });

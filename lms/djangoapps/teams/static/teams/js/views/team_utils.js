@@ -49,7 +49,7 @@
                     type = 'warning';
                 }
                 $message.removeClass('is-hidden').addClass(type);
-                $('.teams-content .msg-content .copy').html(HtmlUtils.escape(message));
+                HtmlUtils.setHtml($('.teams-content .msg-content .copy'), message);
                 $message.focus();
             },
 

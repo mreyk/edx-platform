@@ -17,7 +17,10 @@
 
                    render: function() {
                        var json = this.model.attributes;
-                       this.$el.html(this.template(json));
+                       HtmlUtils.setHtml(
+                           this.$el,
+                           this.template(json)
+                       );
                        if (this.headerActionsView) {
                            this.headerActionsView.setElement(this.$('.page-header-secondary')).render();
                        }

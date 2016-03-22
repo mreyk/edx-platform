@@ -17,11 +17,14 @@
 
             render: function() {
                 if (_.isUndefined(this.message) || _.isNull(this.message)) {
-                    this.$el.html('');
+                    HtmlUtils.setHtml(this.$el, '');
                 } else {
-                    this.$el.html(HtmlUtils.template(messageBannerTemplate)(_.extend(this.options, {
-                        message: this.message
-                    })));
+                    HtmlUtils.setHtml(
+                        this.$el,
+                        HtmlUtils.template(messageBannerTemplate)(
+                            _.extend(this.options, {message: this.message})
+                        )
+                    );
                 }
                 return this;
             },

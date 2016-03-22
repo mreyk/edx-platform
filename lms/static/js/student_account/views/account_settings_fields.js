@@ -2,18 +2,22 @@
     'use strict';
     define([
         'gettext', 'jquery', 'underscore', 'backbone', 'js/views/fields',
-        'edx-ui-toolkit/js/utils/html-utils'
-    ], function(gettext, $, _, Backbone, FieldViews, HtmlUtils) {
+        'edx-ui-toolkit/js/utils/html-utils',
+        'edx-ui-toolkit/js/utils/string-utils'
+    ], function(gettext, $, _, Backbone, FieldViews, HtmlUtils, StringUtils) {
 
         var AccountSettingsFieldViews = {};
 
         AccountSettingsFieldViews.EmailFieldView = FieldViews.TextFieldView.extend({
             successMessage: function() {
-                return HtmlUtils.interpolateHtml(
-                    gettext(
-                        '{success_indicator}We\'ve sent a confirmation message to {new_email_address}. Click the link in the message to update your email address.'  // jshint ignore:line
-                    ),
-                    {success_indicator: this.indicators.success, new_email_address: this.fieldValue()}
+                return HtmlUtils.joinHtml(
+                    this.indicator_html.success,
+                    StringUtils.interpolate(
+                        gettext(
+                            "We've sent a confirmation message to {new_email_address}. Click the link in the message to update your email address."  // jshint ignore:line
+                        ),
+                        {new_email_address: this.fieldValue()}
+                    )
                 );
             }
         });
@@ -38,7 +42,7 @@
                         view.showNotificationMessage(
                             HtmlUtils.interpolateHtml(
                                 gettext('{error_indicator}You must sign out and sign back in before your language changes take effect.'),  // jshint ignore:line
-                                {error_indicator: view.indicators.error}
+                                {error_indicator: view.indicator_html.error}
                             )
                         );
                     }
@@ -77,14 +81,12 @@
             },
 
             successMessage: function() {
-                return HtmlUtils.interpolateHtml(
-                    gettext(
-                        '{success_indicator}We\'ve sent a message to {email_address}. Click the link in the message to reset your password.'  // jshint ignore:line
-                    ),
-                    {
-                        success_indicator: this.indicators.success,
-                        email_address: this.model.get(this.options.emailAttribute)
-                    }
+                return HtmlUtils.joinHtml(
+                    this.indicator_html.success,
+                    StringUtils.interpolate(
+                        gettext("We've sent a message to {email_address}. Click the link in the message to reset your password."),  // jshint ignore:line
+                        {email_address: this.model.get(this.options.emailAttribute)}
+                    )
                 );
             }
         });
@@ -178,18 +180,16 @@
             },
 
             inProgressMessage: function() {
-                return HtmlUtils.interpolateHtml(
-                    this.options.connected ?
-                        gettext('{in_progress_indicator}Unlinking') :
-                        gettext('{in_progress_indicator}Linking'),
-                    {in_progress_indicator: this.indicators.inProgress}
+                return HtmlUtils.joinHtml(
+                    this.indicator_html.inProgress,
+                    this.options.connected ? gettext('Unlinking') : gettext('Linking')
                 );
             },
 
             successMessage: function() {
-                return HtmlUtils.interpolateHtml(
-                    gettext('{success_indicator}Successfully unlinked.'),
-                    {success_indicator: this.indicators.success}
+                return HtmlUtils.joinHtml(
+                    this.indicator_html.success,
+                    gettext('Successfully unlinked.')
                 );
             }
         });

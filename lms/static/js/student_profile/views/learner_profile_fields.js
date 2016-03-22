@@ -19,18 +19,20 @@
 
             showNotificationMessage: function() {
                 var accountSettingsPageUrl = this.options.accountSettingsPageUrl,
-                    accountSettingsLink = HtmlUtils.HTML(
-                        '<a href="' + accountSettingsPageUrl + '">' + gettext('Account Settings page.') + '</a>'
+                    accountSettingsLinkHtml = HtmlUtils.joinHtml(
+                        HtmlUtils.HTML('<a href="' + accountSettingsPageUrl + '">'),
+                        gettext('Account Settings page.'),
+                        HtmlUtils.HTML('</a>')
                     );
                 if (this.profileIsPrivate) {
                     this._super(HtmlUtils.interpolateHtml(
                         gettext('You must specify your birth year before you can share your full profile. To specify your birth year, go to the {account_settings_page_link}'),  // jshint ignore:line
-                        {'account_settings_page_link': accountSettingsLink}
+                        {'account_settings_page_link': accountSettingsLinkHtml}
                     ));
                 } else if (this.requiresParentalConsent) {
                     this._super(HtmlUtils.interpolateHtml(
                         gettext('You must be over 13 to share a full profile. If you are over 13, make sure that you have specified a birth year on the {account_settings_page_link}'),  // jshint ignore:line
-                        {'account_settings_page_link': accountSettingsLink}
+                        {'account_settings_page_link': accountSettingsLinkHtml}
                     ));
                 } else {
                     this._super('');

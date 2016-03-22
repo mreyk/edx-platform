@@ -19,13 +19,13 @@
                 },
 
                 initialize: function(options) {
-                    this.template = _.template(instructorToolbarTemplate);
+                    this.template = HtmlUtils.template(instructorToolbarTemplate);
                     this.team = options.team;
                     this.teamEvents = options.teamEvents;
                 },
 
                 render: function() {
-                    this.$el.html(this.template);
+                    HtmlUtils.setHtml(this.$el, this.template());
                     return this;
                 },
 

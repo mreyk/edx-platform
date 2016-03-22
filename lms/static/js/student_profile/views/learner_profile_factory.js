@@ -2,20 +2,20 @@
     'use strict';
     define([
         'gettext', 'jquery', 'underscore', 'backbone', 'logger',
+        'edx-ui-toolkit/js/utils/string-utils',
         'js/student_account/models/user_account_model',
         'js/student_account/models/user_preferences_model',
         'js/views/fields',
         'js/student_profile/views/learner_profile_fields',
         'js/student_profile/views/learner_profile_view',
         'js/student_account/views/account_settings_fields',
-        'js/views/message_banner',
-        'edx-ui-toolkit/js/utils/html-utils'
-    ], function(gettext, $, _, Backbone, Logger, AccountSettingsModel, AccountPreferencesModel, FieldsView,
-                 LearnerProfileFieldsView, LearnerProfileView, AccountSettingsFieldViews, MessageBannerView,
-                 HtmlUtils) {
-        return function (options) {
+        'js/views/message_banner'
+    ], function(gettext, $, _, Backbone, Logger, StringUtils, AccountSettingsModel, AccountPreferencesModel,
+                FieldsView, LearnerProfileFieldsView, LearnerProfileView, AccountSettingsFieldViews,
+                MessageBannerView) {
+        return function(options) {
 
-            var learnerProfileElement = $('.wrapper-profile');
+            var $learnerProfileElement = $('.wrapper-profile');
 
             var accountSettingsModel = new AccountSettingsModel(
                 _.extend(
@@ -45,7 +45,7 @@
                 required: true,
                 editable: 'always',
                 showMessages: false,
-                title: HtmlUtils.interpolateHtml(
+                title: StringUtils.interpolate(
                     gettext('{platform_name} learners can see my:'),
                     {platform_name: options.platform_name}
                 ),
@@ -114,8 +114,8 @@
                     editable: editable,
                     showMessages: false,
                     title: gettext('About me'),
-                    placeholderValue: gettext("Tell other learners a little about yourself: where you live, what your interests are, why you're taking courses, or what you hope to learn."),
-                    valueAttribute: "bio",
+                    placeholderValue: gettext("Tell other learners a little about yourself: where you live, what your interests are, why you're taking courses, or what you hope to learn."),  // jshint ignore:line
+                    valueAttribute: 'bio',
                     helpMessage: '',
                     persistChanges: true,
                     messagePosition: 'header'
@@ -123,7 +123,7 @@
             ];
 
             var learnerProfileView = new LearnerProfileView({
-                el: learnerProfileElement,
+                el: $learnerProfileElement,
                 ownProfile: options.own_profile,
                 has_preferences_access: options.has_preferences_access,
                 accountSettingsModel: accountSettingsModel,

@@ -46,7 +46,10 @@
                 },
 
                 render: function () {
-                    this.$el.html(_.template(teamsTemplate));
+                    HtmlUtils.setHtml(
+                        this.$el,
+                        HtmlUtils.template(teamsTemplate)()
+                    );
                     this.$('p.error').hide();
                     this.header.setElement(this.$('.teams-header')).render();
                     if (this.instructorTools) {
@@ -217,7 +220,7 @@
                                 collection: view.teamsCollection,
                                 breadcrumbs: view.createBreadcrumbs(topic),
                                 title: gettext('Team Search'),
-                                description: HtmlUtils.interpolateHtml(
+                                description: StringUtils.interpolate(
                                     gettext('Showing results for "{searchString}"'),
                                     { searchString: view.teamsCollection.searchString }
                                 ),

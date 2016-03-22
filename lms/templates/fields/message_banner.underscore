@@ -2,7 +2,7 @@
     <div class="msg">
         <div class="msg-content">
             <div class="copy">
-                <p><%= HtmlUtils.escape(message) %></p>
+                <p><%= HtmlUtils.ensureHtml(message) %></p>
             </div>
         </div>
     </div>

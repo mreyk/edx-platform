@@ -45,7 +45,7 @@
                                 // 3. create a new team
                                 // Be careful to start each link with the appropriate start indicator
                                 // (e.g. {browse_span_start} for #1) and finish it with {span_end}.
-                                gettext('{browse_span_start}Browse teams in other topics{span_end} or {search_span_start}search teams{span_end} in this topic. If you still can\'t find a team to join, {create_span_start}create a new team in this topic{span_end}.'),  // jshint ignore:line
+                                gettext("{browse_span_start}Browse teams in other topics{span_end} or {search_span_start}search teams{span_end} in this topic. If you still can't find a team to join, {create_span_start}create a new team in this topic{span_end}."),  // jshint ignore:line
                                 {
                                     'browse_span_start': HtmlUtils.HTML('<a class="browse-teams" href="">'),
                                     'search_span_start': HtmlUtils.HTML('<a class="search-teams" href="">'),
@@ -53,7 +53,10 @@
                                     'span_end': HtmlUtils.HTML('</a>')
                                 }
                             );
-                            self.$el.append(HtmlUtils.template(teamActionsTemplate)({messageHtml: messageHtml}));
+                            HtmlUtils.append(
+                                self.$el,
+                                HtmlUtils.template(teamActionsTemplate)({messageHtml: messageHtml})
+                            );
                         }
                     });
                     return this;

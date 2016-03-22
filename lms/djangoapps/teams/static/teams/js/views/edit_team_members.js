@@ -5,18 +5,19 @@
             'jquery',
             'underscore',
             'gettext',
-            'teams/js/models/team',
-            'teams/js/views/team_utils',
-            'common/js/components/utils/view_utils',
+            'edx-ui-toolkit/js/utils/html-utils',
             'edx-ui-toolkit/js/utils/string-utils',
+            'common/js/components/utils/view_utils',
+            'teams/js/views/team_utils',
+            'teams/js/models/team',
             'text!teams/templates/edit-team-member.underscore',
             'text!teams/templates/date.underscore'
         ],
-        function(Backbone, $, _, gettext, TeamModel, TeamUtils, ViewUtils, StringUtils,
-                  editTeamMemberTemplate, dateTemplate) {
+        function(Backbone, $, _, gettext, HtmlUtils, StringUtils, ViewUtils, TeamUtils, TeamModel,
+                 editTeamMemberTemplate, dateTemplate) {
             return Backbone.View.extend({
-                dateTemplate: _.template(dateTemplate),
-                teamMemberTemplate: _.template(editTeamMemberTemplate),
+                dateTemplate: HtmlUtils.template(dateTemplate),
+                teamMemberTemplate: HtmlUtils.template(editTeamMemberTemplate),
                 errorMessage: gettext('An error occurred while removing the member from the team. Try again.'),
 
                 events: {
@@ -36,10 +37,17 @@
 
                 render: function() {
                     if (this.model.get('membership').length === 0) {
-                        this.$el.html('<p>' + gettext('This team does not have any members.') + '</p>');
+                        HtmlUtils.setHtml(
+                            this.$el.html,
+                            HtmlUtils.joinHtml(
+                                HtmlUtils.HTML('<p>'),
+                                gettext('This team does not have any members.'),
+                                HtmlUtils.HTML('</p>')
+                            )
+                        );
                     }
                     else {
-                        this.$el.html('<ul class="edit-members"></ul>');
+                        HtmlUtils.setHtml(this.$el, '<ul class="edit-members"></ul>');
                         this.renderTeamMembers();
                     }
                     return this;
@@ -64,13 +72,20 @@
                         );
 
                         // It is assumed that the team member array is automatically in the order of date joined.
-                        self.$('.edit-members').append(self.teamMemberTemplate({
-                            imageUrl: membership.user.profile_image.image_url_medium,
-                            username: membership.user.username,
-                            memberProfileUrl: '/u/' + membership.user.username,
-                            dateJoined: dateJoined,
-                            lastActive: lastActivity
-                        }));
+                        HtmlUtils.append(
+                            self.$('.edit-members'),
+                            self.teamMemberTemplate({
+                                imageUrl: membership.user.profile_image.image_url_medium,
+                                imageUrlAlt: StringUtils.interpolate(
+                                    "{username}'s profile page",  // jshint ignore:line
+                                    {username: membership.user.username}
+                                ),
+                                username: membership.user.username,
+                                memberProfileUrl: '/u/' + membership.user.username,
+                                dateJoined: dateJoined,
+                                lastActive: lastActivity
+                            })
+                        );
                     });
                     this.$('abbr').timeago();
                 },
