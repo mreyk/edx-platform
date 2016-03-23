@@ -793,12 +793,13 @@ class UnderscoreTemplateLinter(object):
 
         expressions = []
         for match in unescaped_expression_regex.finditer(underscore_template):
-            expression = {
-                'start_index': match.start(),
-                'end_index': match.end(),
-                'expression': match.group(),
-            }
-            expressions.append(expression)
+            if "HtmlUtils" not in match.group():
+                expression = {
+                    'start_index': match.start(),
+                    'end_index': match.end(),
+                    'expression': match.group(),
+                }
+                expressions.append(expression)
 
         return expressions
 
