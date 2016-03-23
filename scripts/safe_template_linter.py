@@ -198,7 +198,7 @@ class RuleViolation(object):
         """
         Prints the results represented by this rule violation.
         """
-        print "{}: {}".format(self.full_path, self.rule.rule_id)
+        print "{}: {}\n\n".format(self.full_path, self.rule.rule_id)
 
 
 class ExpressionRuleViolation(RuleViolation):
@@ -314,6 +314,7 @@ class FileResults(object):
         else:
             for violation in self.violations:
                 violation.print_results()
+        return len(self.violations)
 
 
 class MakoTemplateLinter(object):
@@ -813,13 +814,15 @@ def _process_current_walk(current_walk, template_linters, options):
         options: A list of the options.
 
     """
+    current_violations = 0
     walk_directory = current_walk[0]
     walk_files = current_walk[2]
     for walk_file in walk_files:
         for template_linter in template_linters:
             results = template_linter.process_file(walk_directory, walk_file)
             if results is not None:
-                results.print_results(options)
+                current_violations += results.print_results(options)
+    return current_violations
 
 
 def _process_os_walk(starting_dir, template_linters, options):
@@ -832,8 +835,10 @@ def _process_os_walk(starting_dir, template_linters, options):
         options: A list of the options.
 
     """
+    violations = 0
     for current_walk in os.walk(starting_dir):
-        _process_current_walk(current_walk, template_linters, options)
+        violations += _process_current_walk(current_walk, template_linters, options)
+    return violations
 
 
 def main():
@@ -859,8 +864,14 @@ def main():
         'is_quiet': is_quiet,
     }
 
+    print "\n\n\n\n\n\n\n\n\n"
+    print "New script output below this line"
+    print "-----------------------------------------------------"
     template_linters = [MakoTemplateLinter(), UnderscoreTemplateLinter()]
-    _process_os_walk('.', template_linters, options)
+    # TODO: yell at me if I try to check in this change, it's intended for my local use only
+    total_violations = _process_os_walk('lms/templates/verify_student', template_linters, options)
+    print "{} total violations found.".format(total_violations)
+    print "-----------------------------------------------------"
 
 
 if __name__ == "__main__":
