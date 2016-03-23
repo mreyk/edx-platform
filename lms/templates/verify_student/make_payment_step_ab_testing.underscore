@@ -6,15 +6,15 @@
         </h2>
     <% } else if ( !upgrade ) { %>
       <h2 class="page-title">
-        <%= _.sprintf(
-            gettext( "You are enrolling in %(courseName)s"),
+        <%= HtmlUtils.interpolateHtml(
+            gettext( "You are enrolling in {courseName}"),
             { courseName: '<span class="course-title">' + courseName + '</span>' }
           ) %>
       </h2>
     <% } else { %>
       <h2 class="page-title">
-        <%= _.sprintf(
-            gettext( "Upgrade to a Verified Certificate for %(courseName)s"),
+        <%= HtmlUtils.interpolateHtml(
+            gettext( "Upgrade to a Verified Certificate for {courseName}"),
             { courseName: '<span class="course-title">' + courseName + '</span>' }
           ) %>
       </h2>
@@ -33,12 +33,12 @@
             </div>
             <p>
                 <% if ( courseModeSlug === 'no-id-professional' || courseModeSlug === 'professional') { %>
-                    <%= _.sprintf(
-                        gettext( "Professional Certificate for %(courseName)s"),{  courseName: courseName }
+                    <%= HtmlUtils.interpolateHtml(
+                        gettext( "Professional Certificate for {courseName}"),{  courseName: courseName }
                      )%>
                 <% } else { %>
-                    <%= _.sprintf(
-                        gettext( "Verified Certificate for %(courseName)s"),{  courseName: courseName }
+                    <%= HtmlUtils.interpolateHtml(
+                        gettext( "Verified Certificate for {courseName}"),{  courseName: courseName }
                      )%>
                 <% } %>
             </p>

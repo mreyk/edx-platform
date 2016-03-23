@@ -2,15 +2,15 @@
   <div class="review view">
     <% if ( !upgrade ) { %>
       <h2 class="title center-col">
-        <%= _.sprintf(
-            gettext( "You are enrolling in: %(courseName)s"),
+        <%= HtmlUtils.interpolateHtml(
+            gettext( "You are enrolling in: {courseName}"),
             { courseName: '<span class="course-title">' + courseName + '</span>' }
           ) %>
       </h2>
     <% } else { %>
       <h2 class="title">
-        <%= _.sprintf(
-            gettext( "You are upgrading your enrollment for: %(courseName)s"),
+        <%= HtmlUtils.interpolateHtml(
+            gettext( "You are upgrading your enrollment for: {courseName}"),
             { courseName: '<span class="course-title">' + courseName + '</span>' }
           ) %>
       </h2>
@@ -89,8 +89,8 @@
     <div class="container register is-verified">
       <h3 class="title"><%- gettext( "You have already verified your ID!" ) %></h3>
       <p>
-        <%= _.sprintf(
-        gettext( "Your verification status is good until %(verificationGoodUntil)s." ),
+        <%= HtmlUtils.interpolateHtml(
+        gettext( "Your verification status is good until {verificationGoodUntil}." ),
          { verificationGoodUntil: verificationGoodUntil }
         ) %>
       </p>
