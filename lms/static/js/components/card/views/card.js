@@ -110,7 +110,7 @@
                 details: [],
                 actionClass: '',
                 actionUrl: '',
-                actionContent: ''
+                actionContentHtml: ''
             });
 
             return CardView;

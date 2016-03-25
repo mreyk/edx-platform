@@ -38,7 +38,7 @@
                 render: function() {
                     if (this.model.get('membership').length === 0) {
                         HtmlUtils.setHtml(
-                            this.$el.html,
+                            this.$el,
                             HtmlUtils.joinHtml(
                                 HtmlUtils.HTML('<p>'),
                                 gettext('This team does not have any members.'),
@@ -54,17 +54,17 @@
                 },
 
                 renderTeamMembers: function() {
-                    var self = this, dateJoined, lastActivity;
+                    var self = this, dateJoinedHtml, lastActivityHtml;
 
                     _.each(this.model.get('membership'), function(membership) {
-                        dateJoined = StringUtils.interpolate(
+                        dateJoinedHtml = HtmlUtils.interpolateHtml(
                             // Translators: 'date' is a placeholder for a fuzzy, relative timestamp
                             // (see: https://github.com/rmm5t/jquery-timeago)
                             gettext('Joined {date}'),
                             {date: self.dateTemplate({date: membership.date_joined})}
                         );
 
-                        lastActivity = StringUtils.interpolate(
+                        lastActivityHtml = HtmlUtils.interpolateHtml(
                             // Translators: 'date' is a placeholder for a fuzzy, relative timestamp
                             // (see: https://github.com/rmm5t/jquery-timeago)
                             gettext('Last Activity {date}'),
@@ -82,8 +82,8 @@
                                 ),
                                 username: membership.user.username,
                                 memberProfileUrl: '/u/' + membership.user.username,
-                                dateJoined: dateJoined,
-                                lastActive: lastActivity
+                                dateJoinedHtml: dateJoinedHtml,
+                                lastActivityHtml: lastActivityHtml
                             })
                         );
                     });
