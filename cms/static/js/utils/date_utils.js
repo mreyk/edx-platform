@@ -1,4 +1,50 @@
-define(["jquery", "date", "jquery.ui", "jquery.timepicker"], function($, date) {
+define(["jquery", "date", "js/utils/change_on_enter", "jquery.ui", "jquery.timepicker"],
+function($, date, TriggerChangeEventOnEnter) {
+    var setupDatePicker = function (fieldName, view) {
+        var cacheModel = view.model;
+        var div = view.$el.find('#' + view.fieldToSelectorMap[fieldName]);
+        var datefield = $(div).find("input.date");
+        var timefield = $(div).find("input.time");
+        var cacheview = view;
+        var setfield = function () {
+            var newVal = getDate(datefield, timefield),
+                oldTime = new Date(cacheModel.get(fieldName)).getTime();
+            if (newVal) {
+                if (!cacheModel.has(fieldName) || oldTime !== newVal.getTime()) {
+                    cacheview.clearValidationErrors();
+                    cacheview.setAndValidate(fieldName, newVal);
+                }
+            }
+            else {
+                // Clear date (note that this clears the time as well, as date and time are linked).
+                // Note also that the validation logic prevents us from clearing the start date
+                // (start date is required by the back end).
+                cacheview.clearValidationErrors();
+                cacheview.setAndValidate(fieldName, null);
+            }
+        };
+
+        // instrument as date and time pickers
+        timefield.timepicker({'timeFormat' : 'H:i'});
+        datefield.datepicker();
+
+        // Using the change event causes setfield to be triggered twice, but it is necessary
+        // to pick up when the date is typed directly in the field.
+        datefield.change(setfield).keyup(TriggerChangeEventOnEnter);
+        timefield.on('changeTime', setfield);
+        timefield.on('input', setfield);
+
+        current_date = view.model.get(fieldName)
+        // timepicker doesn't let us set null, so check that we have a time
+        if (current_date) {
+            setDate(datefield, timefield, current_date);
+        } // but reset fields either way
+        else {
+            timefield.val('');
+            datefield.val('');
+        }
+    };
+
     var getDate = function (datepickerInput, timepickerInput) {
         // given a pair of inputs (datepicker and timepicker), return a JS Date
         // object that corresponds to the datetime.js that they represent. Assume
@@ -58,6 +104,7 @@ define(["jquery", "date", "jquery.ui", "jquery.timepicker"], function($, date) {
         setDate: setDate,
         renderDate: renderDate,
         convertDateStringsToObjects: convertDateStringsToObjects,
-        parseDateFromString: parseDateFromString
+        parseDateFromString: parseDateFromString,
+        setupDatePicker: setupDatePicker
     };
 });
