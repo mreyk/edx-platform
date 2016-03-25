@@ -7,7 +7,7 @@ from mock import patch
 
 from django.conf import settings
 
-from badges.tests.factories import RandomBadgeClassFactory, CourseEventBadgesConfigurationFactory, BadgeAssertionFactory
+from badges.tests.factories import RandomBadgeClassFactory, CourseEventBadgesConfigurationFactory
 from certificates.models import GeneratedCertificate, CertificateStatuses
 from student.models import CourseEnrollment
 from student.tests.factories import UserFactory

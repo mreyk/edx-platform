@@ -30,8 +30,11 @@ class Badge(PageObject):
         return self.q(css=".badge-details").visible
 
     def display_modal(self):
+        """
+        Click the share button to display the sharing modal for the badge.
+        """
         self.q(css=".share-button").click()
-        self.wait_for_element_visibility(".badges-modal")
+        self.wait_for_element_visibility(".badges-modal", "Share modal displayed")
 
 
 class LearnerProfilePage(FieldsMixin, PageObject):
@@ -92,6 +95,9 @@ class LearnerProfilePage(FieldsMixin, PageObject):
 
     @property
     def badges(self):
+        """
+        Get all currently listed badges.
+        """
         return [Badge(element) for element in self.q(css=".badge-display:not(.badge-placeholder)")]
 
     @privacy.setter
