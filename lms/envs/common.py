@@ -1248,7 +1248,7 @@ base_vendor_js = [
     'js/vendor/jquery.cookie.js',
     'js/vendor/url.min.js',
     'common/js/vendor/underscore.js',
-    'js/vendor/underscore.string.min.js',
+    'common/js/vendor/underscore.string.js',
     'js/vendor/requirejs/require.js',
     'js/RequireJS-namespace-undefine.js',
     'js/vendor/URI.min.js',
