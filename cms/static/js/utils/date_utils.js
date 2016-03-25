@@ -1,18 +1,18 @@
 define(["jquery", "date", "js/utils/change_on_enter", "jquery.ui", "jquery.timepicker"],
 function($, date, TriggerChangeEventOnEnter) {
-    var setupDatePicker = function (fieldName, view) {
+    var setupDatePicker = function (selector, view) {
         var cacheModel = view.model;
-        var div = view.$el.find('#' + view.fieldToSelectorMap[fieldName]);
+        var div = view.$el.find('#' + selector);
         var datefield = $(div).find("input.date");
         var timefield = $(div).find("input.time");
         var cacheview = view;
         var setfield = function () {
             var newVal = getDate(datefield, timefield),
-                oldTime = new Date(cacheModel.get(fieldName)).getTime();
+                oldTime = new Date(cacheModel.get(selector)).getTime();
             if (newVal) {
-                if (!cacheModel.has(fieldName) || oldTime !== newVal.getTime()) {
+                if (!cacheModel.has(selector) || oldTime !== newVal.getTime()) {
                     cacheview.clearValidationErrors();
-                    cacheview.setAndValidate(fieldName, newVal);
+                    cacheview.setAndValidate(selector, newVal);
                 }
             }
             else {
@@ -20,7 +20,7 @@ function($, date, TriggerChangeEventOnEnter) {
                 // Note also that the validation logic prevents us from clearing the start date
                 // (start date is required by the back end).
                 cacheview.clearValidationErrors();
-                cacheview.setAndValidate(fieldName, null);
+                cacheview.setAndValidate(selector, null);
             }
         };
 
@@ -34,7 +34,10 @@ function($, date, TriggerChangeEventOnEnter) {
         timefield.on('changeTime', setfield);
         timefield.on('input', setfield);
 
-        current_date = view.model.get(fieldName)
+        current_date = null;
+        if (view.model) {
+            current_date = view.model.get(selector)
+        }
         // timepicker doesn't let us set null, so check that we have a time
         if (current_date) {
             setDate(datefield, timefield, current_date);

@@ -1,7 +1,7 @@
 define(["js/views/baseview", "codemirror", "js/models/course_update",
         "common/js/components/views/feedback_prompt", "common/js/components/views/feedback_notification",
-        "js/views/course_info_helper", "js/utils/modal"],
-    function(BaseView, CodeMirror, CourseUpdateModel, PromptView, NotificationView, CourseInfoHelper, ModalUtils) {
+        "js/views/course_info_helper", "js/utils/modal", "js/utils/date_utils"],
+    function(BaseView, CodeMirror, CourseUpdateModel, PromptView, NotificationView, CourseInfoHelper, ModalUtils, DateUtils) {
 
     var CourseInfoUpdateView = BaseView.extend({
 
@@ -39,7 +39,7 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
                 }
             });
             this.$el.find(".new-update-form").hide();
-            this.$el.find('.date').datepicker({ 'dateFormat': 'MM d, yy' });
+            DateUtils.setupDatePicker("course-update-list", this);
             return this;
         },
 
@@ -75,8 +75,7 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
                 // Binding empty function to prevent default hideModal.
             });
 
-            $('.date').datepicker('destroy');
-            $('.date').datepicker({ 'dateFormat': 'MM d, yy' });
+            DateUtils.setupDatePicker("course-update-view", this);
         },
 
         onSave: function(event) {
