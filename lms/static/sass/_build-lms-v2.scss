@@ -1,0 +1,10 @@
+// ------------------------------
+// LMS: Shared Build Compile
+// Version 2 - introduces the Pattern Library
+
+// ------------------------------
+// #CONFIG + LIB
+// ------------------------------
+@import 'lib';
+@import 'config';
+@import '../../../node_modules/edx-pattern-library/pattern-library/sass/edx-pattern-library';

@@ -1,0 +1,17 @@
+// ------------------------------
+// LMS main styling
+// Version 2 - introduces the Pattern Library
+
+// NOTE: This is the left-to-right (LTR) configured style compile.
+// It should mirror lms-main-rtl w/ the exception of bi-app references.
+
+// ------------------------------
+// #CONFIG - layout direction
+// ------------------------------
+@import 'rtl';                        // RTL-specifc settings and utilities
+
+
+// ------------------------------
+// #BUILD
+// ------------------------------
+@import 'build-lms-v2';                      // shared compile/build order for both LTR and RTL UI
