@@ -1,6 +1,8 @@
 """
 Bok-Choy PageObject class for learner profile page.
 """
+from bok_choy.query import BrowserQuery
+
 from . import BASE_URL
 from bok_choy.page_object import PageObject
 from .fields import FieldsMixin
@@ -22,19 +24,27 @@ class Badge(PageObject):
     """
     url = None
 
-    def __init__(self, element):
+    def __init__(self, element, browser):
+        self.full_view = browser
         # Element API is similar to browser API, should allow subqueries.
         super(Badge, self).__init__(element)
 
     def is_browser_on_page(self):
         return self.q(css=".badge-details").visible
 
+    def modal_displayed(self):
+        """
+        Verifies that the share modal is diplayed.
+        """
+        # The modal is on the page at large, and not a subelement of the badge div.
+        return BrowserQuery(self.full_view, css=".badges-modal").visible
+
     def display_modal(self):
         """
         Click the share button to display the sharing modal for the badge.
         """
         self.q(css=".share-button").click()
-        self.wait_for_element_visibility(".badges-modal", "Share modal displayed")
+        EmptyPromise(self.modal_displayed, "Share modal displayed").fulfill()
 
 
 class LearnerProfilePage(FieldsMixin, PageObject):
@@ -98,7 +108,7 @@ class LearnerProfilePage(FieldsMixin, PageObject):
         """
         Get all currently listed badges.
         """
-        return [Badge(element) for element in self.q(css=".badge-display:not(.badge-placeholder)")]
+        return [Badge(element, self.browser) for element in self.q(css=".badge-display:not(.badge-placeholder)")]
 
     @privacy.setter
     def privacy(self, privacy):
