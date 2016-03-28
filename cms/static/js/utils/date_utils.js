@@ -59,13 +59,20 @@ function($, date, TriggerChangeEventOnEnter) {
         // given a pair of inputs (datepicker and timepicker), return a JS Date
         // object that corresponds to the datetime.js that they represent. Assume
         // UTC timezone, NOT the timezone of the user's browser.
-        var date = $(datepickerInput).datepicker("getDate");
-        var time = $(timepickerInput).timepicker("getTime");
+        if (datepickerInput) {
+            var date = $(datepickerInput).datepicker("getDate");
+        }
+        if (timepickerInput.length > 0) {
+            var time = $(timepickerInput).timepicker("getTime");
+        }
         if(date && time) {
             return new Date(Date.UTC(
                 date.getFullYear(), date.getMonth(), date.getDate(),
                 time.getHours(), time.getMinutes()
             ));
+        } else if (date) { 
+            return new Date(Date.UTC(
+                date.getFullYear(), date.getMonth(), date.getDate()));
         } else {
             return null;
         }
@@ -77,7 +84,9 @@ function($, date, TriggerChangeEventOnEnter) {
         datetime = date.parse(datetime);
         if (datetime) {
             $(datepickerInput).datepicker("setDate", datetime);
-            $(timepickerInput).timepicker("setTime", datetime);
+            if (timepickerInput.length > 0) {
+                $(timepickerInput).timepicker("setTime", datetime);
+            }
         }
     };
 

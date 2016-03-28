@@ -44,7 +44,8 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
         },
 
         collectionSelectorMap: function(index) {
-            return "update-date-" + this.collection.models[index].cid;
+            // This is actually independent of index? TODO - figure out if this is always true
+            return "course-update-list .new-update-form";
         },
 
         onNew: function(event) {
