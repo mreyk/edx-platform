@@ -63,10 +63,10 @@ var DetailsView = ValidatingView.extend({
     },
 
     render: function() {
-        DateUtils.setupDatePicker('course-start', this);
-        DateUtils.setupDatePicker('course-end', this);
-        DateUtils.setupDatePicker('enrollment-start', this);
-        DateUtils.setupDatePicker('enrollment-end', this);
+        DateUtils.setupDatePicker('start_date', this);
+        DateUtils.setupDatePicker('end_date', this);
+        DateUtils.setupDatePicker('enrollment_start', this);
+        DateUtils.setupDatePicker('enrollment_end', this);
 
         this.$el.find('#' + this.fieldToSelectorMap['overview']).val(this.model.get('overview'));
         this.codeMirrorize(null, $('#course-overview')[0]);
