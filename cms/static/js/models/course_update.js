@@ -8,7 +8,6 @@ define(["backbone", "jquery", "jquery.ui"], function(Backbone, $) {
             "push_notification_selected" : false
         },
         validate: function(attrs) {
-            debugger;
             if (!attrs.date) {
                 return {"date_required": gettext("A date must be specified for this update.")};
             }

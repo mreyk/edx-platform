@@ -3,7 +3,7 @@ function($, date, TriggerChangeEventOnEnter) {
     var setupDatePicker = function (fieldName, view, index) {
         var cacheModel;
         var div;
-        if (typeof index != "undefined" && view.hasOwnProperty("collection")) {
+        if (typeof index !== "undefined" && view.hasOwnProperty("collection")) {
             cacheModel = view.collection.models[index];
             div = view.$el.find('#' + view.collectionSelectorMap(index));
         } else {
@@ -43,7 +43,7 @@ function($, date, TriggerChangeEventOnEnter) {
 
         current_date = null;
         if (cacheModel) {
-            current_date = cacheModel.get(fieldName)
+            current_date = cacheModel.get(fieldName);
         }
         // timepicker doesn't let us set null, so check that we have a time
         if (current_date) {
@@ -59,11 +59,12 @@ function($, date, TriggerChangeEventOnEnter) {
         // given a pair of inputs (datepicker and timepicker), return a JS Date
         // object that corresponds to the datetime.js that they represent. Assume
         // UTC timezone, NOT the timezone of the user's browser.
+        var date = null, time = null;
         if (datepickerInput) {
-            var date = $(datepickerInput).datepicker("getDate");
+            date = $(datepickerInput).datepicker("getDate");
         }
         if (timepickerInput.length > 0) {
-            var time = $(timepickerInput).timepicker("getTime");
+            time = $(timepickerInput).timepicker("getTime");
         }
         if(date && time) {
             return new Date(Date.UTC(

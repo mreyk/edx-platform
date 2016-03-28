@@ -1,7 +1,8 @@
 define(["js/views/validation", "codemirror", "js/models/course_update",
         "common/js/components/views/feedback_prompt", "common/js/components/views/feedback_notification",
         "js/views/course_info_helper", "js/utils/modal", "js/utils/date_utils"],
-    function(ValidatingView, CodeMirror, CourseUpdateModel, PromptView, NotificationView, CourseInfoHelper, ModalUtils, DateUtils) {
+    function(ValidatingView, CodeMirror, CourseUpdateModel, PromptView, NotificationView,
+        CourseInfoHelper, ModalUtils, DateUtils) {
 
     var CourseInfoUpdateView = ValidatingView.extend({
 
@@ -28,7 +29,6 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             // remove and then add all children
             $(updateEle).empty();
             var self = this;
-            debugger;
             this.collection.each(function (index, update) {
                 try {
                     CourseInfoHelper.changeContentToPreview(
@@ -45,13 +45,12 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             return this;
         },
 
-        collectionSelectorMap: function(index) {
+        collectionSelectorMap: function() {
             // This is actually independent of index? TODO - figure out if this is always true
             return "course-update-list .new-update-form";
         },
 
         setAndValidate: function(attr, value) {
-            debugger;
             var targetModel = this.collection.get(this.$currentPost.attr('name'));
             targetModel.set(attr, value);
             targetModel.isValid();
