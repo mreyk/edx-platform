@@ -94,9 +94,18 @@ define(['backbone', 'jquery', 'underscore',
             it("profile field parts are not rendered for private profile for other people", function () {
                testProfilePrivatePartsDoNotRender(false);
             });
-            
-            // TODO: Test editability (when ownProfile click should enable editing) --- check that proper request is sent
-            // otherwise disable. 
+
+            it("does not allow fields to be edited when visiting a profile for other people", function () {
+                var view = createSectionTwoView(false, true);
+                var bio = view.options.viewList[0];
+                expect(bio.editable).toBe("never");
+            });
+
+            it("allows fields to be edited when visiting one's own profile", function () {
+                var view = createSectionTwoView(true, true);
+                var bio = view.options.viewList[0];
+                expect(bio.editable).toBe("toggle");
+            });
 
         });
     }

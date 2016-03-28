@@ -7,7 +7,7 @@ define(['backbone', 'jquery', 'underscore',
         "use strict";
         describe("edx.user.BadgeListView", function () {
 
-            var view, badge;
+            var view;
 
             var createView = function (badges, pages, page, hasNextPage) {
                 var badgeCollection = new PagingCollection();
