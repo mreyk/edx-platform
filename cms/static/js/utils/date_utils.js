@@ -1,8 +1,15 @@
 define(["jquery", "date", "js/utils/change_on_enter", "jquery.ui", "jquery.timepicker"],
 function($, date, TriggerChangeEventOnEnter) {
-    var setupDatePicker = function (fieldName, view) {
-        var cacheModel = view.model;
-        var div = view.$el.find('#' + view.fieldToSelectorMap[fieldName]);
+    var setupDatePicker = function (fieldName, view, index) {
+        var cacheModel;
+        var div;
+        if (typeof index != "undefined" && view.hasOwnProperty("collection")) {
+            cacheModel = view.collection.models[index];
+            div = view.$el.find('#' + view.collectionSelectorMap(index));
+        } else {
+            cacheModel = view.model;
+            div = view.$el.find('#' + view.fieldToSelectorMap[fieldName]);
+        }
         var datefield = $(div).find("input.date");
         var timefield = $(div).find("input.time");
         var cacheview = view;
@@ -35,8 +42,8 @@ function($, date, TriggerChangeEventOnEnter) {
         timefield.on('input', setfield);
 
         current_date = null;
-        if (view.model) {
-            current_date = view.model.get(fieldName)
+        if (cacheModel) {
+            current_date = cacheModel.get(fieldName)
         }
         // timepicker doesn't let us set null, so check that we have a time
         if (current_date) {

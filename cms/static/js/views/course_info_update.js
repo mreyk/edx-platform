@@ -27,20 +27,24 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
             // remove and then add all children
             $(updateEle).empty();
             var self = this;
-            this.collection.each(function (update) {
+            this.collection.each(function (index, update) {
                 try {
                     CourseInfoHelper.changeContentToPreview(
                         update, 'content', self.options['base_asset_url']);
                     // push notification is always disabled for existing updates
                     var newEle = self.template({ updateModel : update, push_notification_enabled : false });
                     $(updateEle).append(newEle);
+                    DateUtils.setupDatePicker("date", this, index);
                 } catch (e) {
                     // ignore
                 }
             });
             this.$el.find(".new-update-form").hide();
-            DateUtils.setupDatePicker("course-update-list", this);
             return this;
+        },
+
+        collectionSelectorMap: function(index) {
+            return "update-date-" + this.collection.models[index].cid;
         },
 
         onNew: function(event) {
@@ -75,7 +79,7 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
                 // Binding empty function to prevent default hideModal.
             });
 
-            DateUtils.setupDatePicker("course-update-view", this);
+            DateUtils.setupDatePicker("date", this, 0);
         },
 
         onSave: function(event) {
