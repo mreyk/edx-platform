@@ -1,9 +1,9 @@
-define(["js/views/baseview", "codemirror", "js/models/course_update",
+define(["js/views/validation", "codemirror", "js/models/course_update",
         "common/js/components/views/feedback_prompt", "common/js/components/views/feedback_notification",
         "js/views/course_info_helper", "js/utils/modal", "js/utils/date_utils"],
-    function(BaseView, CodeMirror, CourseUpdateModel, PromptView, NotificationView, CourseInfoHelper, ModalUtils, DateUtils) {
+    function(ValidatingView, CodeMirror, CourseUpdateModel, PromptView, NotificationView, CourseInfoHelper, ModalUtils, DateUtils) {
 
-    var CourseInfoUpdateView = BaseView.extend({
+    var CourseInfoUpdateView = ValidatingView.extend({
 
         // collection is CourseUpdateCollection
         events: {
@@ -19,6 +19,7 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
             this.render();
             // when the client refetches the updates as a whole, re-render them
             this.listenTo(this.collection, 'reset', this.render);
+            this.listenTo(this.collection, 'invalid', this.handleValidationError);
         },
 
         render: function () {
@@ -27,6 +28,7 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
             // remove and then add all children
             $(updateEle).empty();
             var self = this;
+            debugger;
             this.collection.each(function (index, update) {
                 try {
                     CourseInfoHelper.changeContentToPreview(
@@ -46,6 +48,27 @@ define(["js/views/baseview", "codemirror", "js/models/course_update",
         collectionSelectorMap: function(index) {
             // This is actually independent of index? TODO - figure out if this is always true
             return "course-update-list .new-update-form";
+        },
+
+        setAndValidate: function(attr, value) {
+            debugger;
+            var targetModel = this.collection.get(this.$currentPost.attr('name'));
+            targetModel.set(attr, value);
+            targetModel.isValid();
+        },
+
+        handleValidationError : function(model, error) {
+            this.clearValidationErrors();
+            for (var field in error) {
+                var ele = this.$el.find('#course-update-list .new-update-form');
+                this._cacheValidationErrors.push(ele);
+                this.getInputElements(ele).addClass('error');
+                $(ele).parent().append(this.errorTemplate({message : error[field]}));
+            }
+            $('.wrapper-notification-warning').addClass('wrapper-notification-warning-w-errors');
+            $('.save-button').addClass('is-disabled');
+            $('#notification-warning-title').text(this.error_title);
+            $('#notification-warning-description').text(this.error_message);
         },
 
         onNew: function(event) {
