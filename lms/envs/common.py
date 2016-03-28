@@ -2000,6 +2000,9 @@ INSTALLED_APPS = (
 
     # API access administration
     'openedx.core.djangoapps.api_admin',
+
+    # Verified Track Content Cohorting
+    'verified_track_content',
 )
 
 # Migrations which are not in the standard module "migrations"
