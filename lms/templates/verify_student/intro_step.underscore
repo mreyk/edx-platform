@@ -4,7 +4,11 @@
      <h3 class="title">
       <%= HtmlUtils.interpolateHtml(
           gettext( "Thanks for returning to verify your ID in: {courseName}"),
-          { courseName: '<span class="course-title">' + courseName + '</span>' }
+          { courseName: HtmlUtils.joinHtml(
+            HtmlUtils.HTML('<span class="course-title">'),
+            courseName,
+            HtmlUtils.HTML('</span>')
+          ) }
         ) %>
      </h3>
   <% } else { %>

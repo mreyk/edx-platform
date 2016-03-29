@@ -7,16 +7,24 @@
     <% } else if ( !upgrade ) { %>
       <h2 class="page-title">
         <%= HtmlUtils.interpolateHtml(
-            gettext( "You are enrolling in {courseName}"),
-            { courseName: '<span class="course-title">' + courseName + '</span>' }
-          ) %>
+            gettext( "You are enrolling in: {courseName}"),
+            { courseName: HtmlUtils.joinHtml(
+                HtmlUtils.HTML('<span class="course-title">'),
+                courseName,
+                HtmlUtils.HTML('</span>')
+            ) }
+        ) %>
       </h2>
     <% } else { %>
       <h2 class="page-title">
         <%= HtmlUtils.interpolateHtml(
             gettext( "Upgrade to a Verified Certificate for {courseName}"),
-            { courseName: '<span class="course-title">' + courseName + '</span>' }
-          ) %>
+            { courseName: HtmlUtils.joinHtml(
+                HtmlUtils.HTML('<span class="course-title">'),
+                courseName,
+                HtmlUtils.HTML('</span>')
+            ) }
+        ) %>
       </h2>
     <% } %>
 
@@ -33,11 +41,11 @@
             </div>
             <p>
                 <% if ( courseModeSlug === 'no-id-professional' || courseModeSlug === 'professional') { %>
-                    <%= HtmlUtils.interpolateHtml(
+                    <%- StringUtils.interpolate(
                         gettext( "Professional Certificate for {courseName}"),{  courseName: courseName }
                      )%>
                 <% } else { %>
-                    <%= HtmlUtils.interpolateHtml(
+                    <%- StringUtils.interpolate(
                         gettext( "Verified Certificate for {courseName}"),{  courseName: courseName }
                      )%>
                 <% } %>
