@@ -2,9 +2,38 @@
 // LMS: Shared Build Compile
 // Version 2 - introduces the Pattern Library
 
+
+// BASE  *default edX offerings*
+// ====================
+
+
 // ------------------------------
-// #CONFIG + LIB
+// #CONFIG
+// ------------------------------
+@import 'config';
+
+
+// ------------------------------
+// #LIB
 // ------------------------------
 @import 'lib';
-@import 'config';
 @import '../../../node_modules/edx-pattern-library/pattern-library/sass/edx-pattern-library';
+
+// ------------------------------
+// #COMMON PARTIALS
+// ------------------------------
+
+
+
+// shared - course
+@import 'shared-v2/header';
+/*@import 'shared/fields';
+@import 'shared/forms';
+@import 'shared/footer';
+@import 'shared/footer-edx';
+@import 'shared/course_object';
+@import 'shared/course_filter';
+@import 'shared/modal';
+@import 'shared/activation_messages';
+@import 'shared/unsubscribe';*/
+
