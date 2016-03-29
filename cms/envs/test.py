@@ -324,3 +324,4 @@ FEATURES['CUSTOM_COURSES_EDX'] = True
 # API access management. Necessary so that django-simple-history
 # doesn't break when running pre-test migrations.
 INSTALLED_APPS += ('openedx.core.djangoapps.api_admin',)
+FEATURES['ENABLE_API_ACCESS_MANAGEMENT'] = True

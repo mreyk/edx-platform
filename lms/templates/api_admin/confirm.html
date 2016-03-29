@@ -1,0 +1,14 @@
+## mako
+<%page expression_filter="h"/>
+<%inherit file="../main.html"/>
+<%
+from django.utils.translation import ugettext as _
+
+from openedx.core.djangoapps.api_admin.models import ApiAccessRequest
+%>
+
+<h1>${_("Thanks for the {platform_name} API request, goofball!").format(platform_name=settings.PLATFORM_NAME)}</h1>
+
+% if status == ApiAccessRequest.PENDING:
+  <p>${_("Chill; your API access is pending.")}</p>
+% endif

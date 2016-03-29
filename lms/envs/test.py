@@ -584,3 +584,6 @@ JWT_AUTH.update({
 # better performant unit tests.
 from openedx.core.lib.block_structure.transformer_registry import TransformerRegistry
 TransformerRegistry.USE_PLUGIN_MANAGER = False
+
+# API access management
+FEATURES['ENABLE_API_ACCESS_MANAGEMENT'] = True

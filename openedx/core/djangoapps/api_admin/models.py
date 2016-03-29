@@ -7,7 +7,6 @@ from django.utils.translation import ugettext as _
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
-
 log = logging.getLogger(__name__)
 
 
@@ -22,7 +21,7 @@ class ApiAccessRequest(TimeStampedModel):
         (DENIED, _('Denied')),
         (APPROVED, _('Approved')),
     )
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, unique=True)
     status = models.CharField(
         max_length=255,
         choices=STATUS_CHOICES,
@@ -30,8 +29,8 @@ class ApiAccessRequest(TimeStampedModel):
         db_index=True,
         help_text=_('Status of this API access request'),
     )
-    website = models.URLField(help_text=_('The URL of the website associated with this API user.'))
-    reason = models.TextField(help_text=_('The reason this user wants to access the API.'))
+    website = models.URLField(help_text=_('The URL of your website.'))
+    reason = models.TextField(help_text=_('Please describe what your application will do.'))
 
     history = HistoricalRecords()
 
