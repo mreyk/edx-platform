@@ -2,22 +2,22 @@
 """
 A linting tool to check if templates are safe
 """
+from __future__ import print_function
 from enum import Enum
 import os
 import re
 import sys
 
 _skip_dirs = (
-    '/node_modules',
-    '/vendor',
-    '/spec',
-    '/.pycharm_helpers',
-    '/test_root',
-    '/reports/diff_quality',
-    '/common/static/xmodule/modules',
+    '.pycharm_helpers',
+    'common/static/xmodule/modules',
+    'node_modules',
+    'reports/diff_quality',
+    'spec',
+    'scripts/tests/templates',
+    'test_root',
+    'vendor',
 )
-_skip_mako_dirs = _skip_dirs
-_skip_underscore_dirs = _skip_dirs + ('/test',)
 
 
 def _is_skip_dir(skip_dirs, directory):
@@ -33,8 +33,8 @@ def _is_skip_dir(skip_dirs, directory):
 
     """
     for skip_dir in skip_dirs:
-        dir_contains_skip_dir = (directory.find(skip_dir + '/') >= 0)
-        if dir_contains_skip_dir or directory.endswith(skip_dir):
+        dir_contains_skip_dir = (directory.find('/' + skip_dir + '/') >= 0)
+        if dir_contains_skip_dir or directory.startswith(skip_dir) or directory.endswith(skip_dir):
             return True
     return False
 
@@ -48,6 +48,7 @@ def _load_file(self, file_full_path):
 
     Returns:
         A string containing the files contents.
+
     """
     with open(file_full_path, 'r') as input_file:
         file_contents = input_file.read()
@@ -152,9 +153,14 @@ class Rules(Enum):
     """
     mako_missing_default = ('mako-missing-default', 'Missing default <%page expression_filter="h"/>.')
     mako_multiple_page_tags = ('mako-multiple-page-tags', 'A Mako template can only have one <%page> tag.')
+    mako_include_with_violations = ('mako-include-with-violations', 'Must fix violations in included templates first.')
     mako_unparsable_expression = ('mako-unparsable-expression', 'The expression could not be properly parsed.')
     mako_unwanted_html_filter = ('mako-unwanted-html-filter', 'Remove explicit h filters when it is provided by the page directive.')
     mako_invalid_html_filter = ('mako-invalid-html-filter', 'The expression is using an invalid filter in an HTML context.')
+    mako_deprecated_display_name = (
+        'mako-deprecated-display-name',
+        'Replace deprecated display_name_with_default_escaped with display_name_with_default.'
+    )
     mako_invalid_js_filter = ('mako-invalid-js-filter', 'The expression is using an invalid filter in a JavaScript context.')
     mako_js_string_missing_quotes = ('mako-js-string-missing-quotes', 'An expression using the js_escape_string filter must have surrounding quotes.')
 
@@ -180,6 +186,34 @@ class RuleViolation(object):
         """
         self.rule = rule
         self.full_path = ''
+        self.is_disabled = False
+
+    def _mark_disabled(self, template_string):
+        """
+        Performs the disable pragma search and marks the rule as disabled if a
+        matching pragma is found.
+
+        Pragma format::
+
+            safe-lint: disable=violation-name,other-violation-name
+
+        Arguments:
+            template_string: The scoped string of code in which to search for
+            the pragma.
+
+        Side Effect:
+            Sets self.is_disabled as appropriate based on whether the pragma is
+            found.
+
+        """
+        pragma_match = re.search(r'safe-lint:[\s*]disable=([a-zA-Z-,]+)', template_string)
+        if pragma_match is None:
+            return
+
+        for disabled_rule in pragma_match.groups()[0].split(','):
+            if disabled_rule == self.rule.rule_id:
+                self.is_disabled = True
+                return
 
     def prepare_results(self, full_path, file_string, line_breaks):
         """
@@ -193,12 +227,16 @@ class RuleViolation(object):
 
         """
         self.full_path = full_path
+        self._mark_disabled(file_string)
 
-    def print_results(self):
+    def print_results(self, out):
         """
         Prints the results represented by this rule violation.
+
+        Arguments:
+            out: output file
         """
-        print "{}: {}".format(self.full_path, self.rule.rule_id)
+        print("{}: {}".format(self.full_path, self.rule.rule_id), file=out)
 
 
 class ExpressionRuleViolation(RuleViolation):
@@ -225,6 +263,48 @@ class ExpressionRuleViolation(RuleViolation):
         self.end_line = 0
         self.end_column = 0
         self.lines = []
+        self.is_disabled = False
+
+    def _mark_expression_disabled(self, file_string, line_breaks):
+        """
+        Marks the expression violation as disabled if it finds the disable
+        pragma anywhere on either the first line of the violation, or the
+        preceding line of the violation.
+
+        Note that disable at the end of a line currently disables for the
+        following line as well.
+
+        Pragma format::
+
+            safe-lint: disable=violation-name,other-violation-name
+
+        Examples::
+
+            <% // safe-lint: disable=underscore-not-escaped %>
+            <%= gettext('Single Line') %>
+
+            <%= gettext('Single Line') %><% // safe-lint: disable=underscore-not-escaped %>
+
+        Arguments:
+            file_string: The contents of the file in violation.
+            line_breaks: A list of indices into file_string at which each line
+                break was found.
+
+        Side Effect:
+            Sets self.is_disabled as appropriate based on whether the pragma is
+            found.
+
+        """
+        start_line = 1 if self.start_line == 1 else self.start_line - 1
+        start_index = line_breaks[start_line - 1]
+        num_lines = len(line_breaks)
+        if start_line >= num_lines:
+            pragma_lines = file_string[start_index:]
+        else:
+            end_index = line_breaks[start_line] - 1
+            pragma_lines = file_string[start_index:end_index]
+
+        self._mark_disabled(pragma_lines)
 
     def prepare_results(self, full_path, file_string, line_breaks):
         """
@@ -250,10 +330,15 @@ class ExpressionRuleViolation(RuleViolation):
             self.end_column = '?'
         for line_number in range(self.start_line, self.end_line + 1):
             self.lines.append(_get_line(self, file_string, line_breaks, line_number))
+        self._mark_expression_disabled(file_string, line_breaks)
 
-    def print_results(self):
+    def print_results(self, out):
         """
         Prints the results represented by this rule violation.
+
+        Arguments:
+            out: output file
+
         """
         for line_number in range(self.start_line, self.end_line + 1):
             if (line_number == self.start_line):
@@ -262,13 +347,13 @@ class ExpressionRuleViolation(RuleViolation):
             else:
                 column = 1
                 rule_id = " " * (len(self.rule.rule_id) + 1)
-            print "{}: {}:{}: {} {}".format(
+            print("{}: {}:{}: {} {}".format(
                 self.full_path,
                 line_number,
                 column,
                 rule_id,
                 self.lines[line_number - self.start_line - 1]
-            )
+            ), file=out)
 
 
 class FileResults(object):
@@ -285,7 +370,45 @@ class FileResults(object):
 
         """
         self.full_path = full_path
+        self.directory = os.path.dirname(full_path)
+        self.is_file = os.path.isfile(full_path)
         self.violations = []
+        self.includes = []
+
+    def resolve_include(self, include, include_results):
+        """
+        Resolves potential include violations and determines if they are real or
+        not. For real violations, adds the violations into the violation list.
+
+        If the include_results is not a file, it will be considered a violation
+        and will require a disable pragma.
+
+        Arguments:
+            include: The include with the potential violation to be resolved.
+            include_results: The results of processing the include file.
+
+        """
+        include_has_violations = (not include_results.is_file) or (len(include_results.violations) > 0)
+        if include_has_violations:
+            self.violations.append(include['potential_violation'])
+
+    def add_include(self, include_file, potential_violation):
+        """
+        Adds an include which also must have no violations.
+
+        Arguments:
+            include_file: The include file as provided in an include.
+            potential_violation: Represents the violation of the include, if the
+                included file has any violations.
+
+        """
+        include_full_path = os.path.normpath(self.directory + '/' + include_file)
+        self.includes.append({
+            'directory': os.path.dirname(include_full_path),
+            'file_name': os.path.split(include_full_path)[1],
+            'full_path': include_full_path,
+            'potential_violation': potential_violation,
+        })
 
     def prepare_results(self, file_string):
         """
@@ -298,8 +421,10 @@ class FileResults(object):
         line_breaks = _get_line_breaks(self, file_string)
         for violation in self.violations:
             violation.prepare_results(self.full_path, file_string, line_breaks)
+        for include in self.includes:
+            include['potential_violation'].prepare_results(self.full_path, file_string, line_breaks)
 
-    def print_results(self, options):
+    def print_results(self, options, out):
         """
         Prints the results (i.e. violations) in this file.
 
@@ -307,13 +432,16 @@ class FileResults(object):
             options: A list of the following options:
                 is_quiet: True to print only file names, and False to print
                     all violations.
+            out: output file
+
 
         """
         if options['is_quiet']:
-            print self.full_path
+            print(self.full_path, file=out)
         else:
             for violation in self.violations:
-                violation.print_results()
+                if not violation.is_disabled:
+                    violation.print_results(out)
 
 
 class MakoTemplateLinter(object):
@@ -322,6 +450,18 @@ class MakoTemplateLinter(object):
     """
 
     _skip_mako_dirs = _skip_dirs
+
+    def __init__(self):
+        """
+        Init method.
+        """
+        self.results = {}
+
+    def supports_includes(self):
+        """
+        Mako template linter supports linting includes.
+        """
+        return True
 
     def process_file(self, directory, file_name):
         """
@@ -333,12 +473,24 @@ class MakoTemplateLinter(object):
             file_name (string): A filename for a potential Mako file
 
         Returns:
-            The file results containing any violations, or None if the file is
-            never checked.
+            The file results containing any violations.
 
         """
-        if not self._is_mako_directory(directory):
-            return None
+        mako_file_full_path = os.path.normpath(directory + '/' + file_name)
+        results = FileResults(mako_file_full_path)
+
+        # don't process the same file twice. this could happen when we process
+        # files included by another file
+        if mako_file_full_path in self.results:
+            return self.results[mako_file_full_path]
+
+        self.results[mako_file_full_path] = results
+
+        if not results.is_file:
+            return results
+
+        if not self._is_valid_directory(directory):
+            return results
 
         # TODO: When safe-by-default is turned on at the platform level, will we:
         # 1. Turn it on for .html only, or
@@ -347,11 +499,11 @@ class MakoTemplateLinter(object):
         #    the n filter to turn off h for some of these)?
         # For now, we only check .html and .xml files
         if not (file_name.lower().endswith('.html') or file_name.lower().endswith('.xml')):
-            return None
+            return results
 
-        return self._load_and_check_mako_file_is_safe(directory + '/' + file_name)
+        return self._load_and_check_mako_file_is_safe(mako_file_full_path, results)
 
-    def _is_mako_directory(self, directory):
+    def _is_valid_directory(self, directory):
         """
         Determines if the provided directory is a directory that could contain
         Mako template files that need to be linted.
@@ -366,12 +518,15 @@ class MakoTemplateLinter(object):
         if _is_skip_dir(self._skip_mako_dirs, directory):
             return False
 
+        # TODO: This is an imperfect guess concerning the Mako template
+        # directories. This needs to be reviewed before turning on safe by
+        # default at the platform level.
         if (directory.find('/templates/') >= 0) or directory.endswith('/templates'):
             return True
 
         return False
 
-    def _load_and_check_mako_file_is_safe(self, mako_file_full_path):
+    def _load_and_check_mako_file_is_safe(self, mako_file_full_path, results):
         """
         Loads the Mako template file and checks if it is in violation.
 
@@ -379,16 +534,12 @@ class MakoTemplateLinter(object):
             mako_file_full_path: The file to be loaded and linted.
 
         Returns:
-            The file results containing any violations, or None if none found.
+            The file results containing any violations.
 
         """
         mako_template = _load_file(self, mako_file_full_path)
-        results = FileResults(mako_file_full_path)
         self._check_mako_file_is_safe(mako_template, results)
-        if len(results.violations) > 0:
-            return results
-        else:
-            return None
+        return results
 
     def _check_mako_file_is_safe(self, mako_template, results):
         """
@@ -399,6 +550,8 @@ class MakoTemplateLinter(object):
             results: A file results objects to which violations will be added.
 
         """
+        if self._is_django_template(mako_template):
+            return
         has_page_default = False
         if self._has_multiple_page_tags(mako_template):
             results.violations.append(RuleViolation(Rules.mako_multiple_page_tags))
@@ -407,7 +560,23 @@ class MakoTemplateLinter(object):
             if not has_page_default:
                 results.violations.append(RuleViolation(Rules.mako_missing_default))
         self._check_mako_expressions(mako_template, has_page_default, results)
+        self._check_include_files(mako_template, results)
         results.prepare_results(mako_template)
+
+    def _is_django_template(self, mako_template):
+        """
+            Determines if the template is actually a Django template.
+
+        Arguments:
+            mako_template: The template code.
+
+        Returns:
+            True if this is really a Django template, and False otherwise.
+
+        """
+        if re.search('({%.*%})|({{.*}})', mako_template) is not None:
+            return True
+        return False
 
     def _has_multiple_page_tags(self, mako_template):
         """
@@ -433,6 +602,30 @@ class MakoTemplateLinter(object):
         page_match = page_h_filter_regex.search(mako_template)
         return page_match
 
+    def _check_include_files(self, mako_template, results):
+        """
+        Checks if the Mako template includes other template files. If so, sets
+        up potential violations that will be checked later.
+
+        Arguments:
+            mako_template: The contents of the Mako template.
+
+        """
+        regex = re.compile('<%include[^>]*file=(?:"|\')(.+?)(?:"|\')[^>]*/>')
+        for match in regex.finditer(mako_template):
+            include_file = match.groups()[0]
+            expression = {
+                'start_index': match.start(),
+                'end_index': match.end(),
+                'expression': match.group()
+            }
+            results.add_include(
+                include_file,
+                ExpressionRuleViolation(
+                    Rules.mako_include_with_violations, expression
+                )
+            )
+
     def _check_mako_expressions(self, mako_template, has_page_default, results):
         """
         Searches for Mako expressions and then checks if they contain
@@ -456,11 +649,28 @@ class MakoTemplateLinter(object):
 
             context = self._get_context(contexts, expression['start_index'])
             self._check_filters(mako_template, expression, context, has_page_default, results)
+            self._check_deprecated_display_name(expression, results)
+
+    def _check_deprecated_display_name(self, expression, results):
+        """
+        Checks that the deprecated display_name_with_default_escaped is not
+        used. Adds violation to results if there is a problem.
+
+        Arguments:
+            expression: A dict containing the start_index, end_index, and
+                expression (text) of the expression.
+            results: A list of results into which violations will be added.
+
+        """
+        if expression['expression'].find('.display_name_with_default_escaped') >= 0:
+            results.violations.append(ExpressionRuleViolation(
+                Rules.mako_deprecated_display_name, expression
+            ))
 
     def _check_filters(self, mako_template, expression, context, has_page_default, results):
         """
         Checks that the filters used in the given Mako expression are valid
-        for the given context.
+        for the given context. Adds violation to results if there is a problem.
 
         Arguments:
             mako_template: The contents of the Mako template.
@@ -670,7 +880,13 @@ class UnderscoreTemplateLinter(object):
     The linter for Underscore.js template files.
     """
 
-    _skip_underscore_dirs = _skip_dirs
+    _skip_underscore_dirs = _skip_dirs + ('test',)
+
+    def supports_includes(self):
+        """
+        Underscore template linter does not lint includes.
+        """
+        return False
 
     def process_file(self, directory, file_name):
         """
@@ -682,32 +898,21 @@ class UnderscoreTemplateLinter(object):
             file_name (string): A filename for a potential underscore file
 
         Returns:
-            The file results containing any violations, or None if the file is
-            never checked.
+            The file results containing any violations.
 
         """
-        if not self._is_underscore_directory(directory):
-            return
+        full_path = os.path.normpath(directory + '/' + file_name)
+        results = FileResults(full_path)
+
+        if not self._is_valid_directory(directory):
+            return results
 
         if not file_name.lower().endswith('.underscore'):
-            return
+            return results
 
-        full_path = directory + '/' + file_name
-        return self._load_and_check_underscore_file_is_safe(full_path)
+        return self._load_and_check_underscore_file_is_safe(full_path, results)
 
-    def print_results(self, options):
-        """
-        Prints all results (i.e. violations) for all files that failed this
-        linter.
-
-        Arguments:
-            options: A list of the options.
-
-        """
-        for result in self._results:
-            result.print_results(options)
-
-    def _is_underscore_directory(self, directory):
+    def _is_valid_directory(self, directory):
         """
         Determines if the provided directory is a directory that could contain
         Underscore.js template files that need to be linted.
@@ -724,7 +929,7 @@ class UnderscoreTemplateLinter(object):
 
         return True
 
-    def _load_and_check_underscore_file_is_safe(self, file_full_path):
+    def _load_and_check_underscore_file_is_safe(self, file_full_path, results):
         """
         Loads the Underscore.js template file and checks if it is in violation.
 
@@ -732,17 +937,12 @@ class UnderscoreTemplateLinter(object):
             file_full_path: The file to be loaded and linted
 
         Returns:
-            The file results containing any violations, or None if the file is
-            never checked.
+            The file results containing any violations.
 
         """
         underscore_template = _load_file(self, file_full_path)
-        results = FileResults(file_full_path)
         self._check_underscore_file_is_safe(underscore_template, results)
-        if len(results.violations) > 0:
-            return results
-        else:
-            return None
+        return results
 
     def _check_underscore_file_is_safe(self, underscore_template, results):
         """
@@ -767,9 +967,36 @@ class UnderscoreTemplateLinter(object):
         """
         expressions = self._find_unescaped_expressions(underscore_template)
         for expression in expressions:
-            results.violations.append(ExpressionRuleViolation(
-                Rules.underscore_not_escaped, expression
-            ))
+            if not self._is_safe_unescaped_expression(expression):
+                results.violations.append(ExpressionRuleViolation(
+                    Rules.underscore_not_escaped, expression
+                ))
+
+    def _is_safe_unescaped_expression(self, expression):
+        """
+        Determines whether an expression is safely escaped, even though it is
+        using the expression syntax that doesn't itself escape (i.e. <%= ).
+
+        In some cases it is ok to not use the Underscore.js template escape
+        (i.e. <%- ) because the escaping is happening inside the expression.
+
+        Safe examples::
+
+            <%= HtmlUtils.ensureHtml(message) %>
+            <%= _.escape(message) %>
+
+        Arguments:
+            expression: The expression being checked.
+
+        Returns:
+            True if the expression has been safely escaped, and False otherwise.
+
+        """
+        if expression['expression_inner'].startswith('HtmlUtils.'):
+            return True
+        if expression['expression_inner'].startswith('_.escape('):
+            return True
+        return False
 
     def _find_unescaped_expressions(self, underscore_template):
         """
@@ -788,7 +1015,7 @@ class UnderscoreTemplateLinter(object):
                 end_index: The index of the end of the expression.
                 expression: The text of the expression.
         """
-        unescaped_expression_regex = re.compile("<%=.*?%>", re.DOTALL)
+        unescaped_expression_regex = re.compile("<%=(.*?)%>", re.DOTALL)
 
         expressions = []
         for match in unescaped_expression_regex.finditer(underscore_template):
@@ -796,13 +1023,14 @@ class UnderscoreTemplateLinter(object):
                 'start_index': match.start(),
                 'end_index': match.end(),
                 'expression': match.group(),
+                'expression_inner': match.groups()[0].strip()
             }
             expressions.append(expression)
 
         return expressions
 
 
-def _process_current_walk(current_walk, template_linters, options):
+def _process_current_walk(current_walk, template_linters, options, out):
     """
     For each linter, lints all the files in the current os walk.  This means
     finding and printing violations.
@@ -811,18 +1039,26 @@ def _process_current_walk(current_walk, template_linters, options):
         current_walk: A walk returned by os.walk().
         template_linters: A list of linting objects.
         options: A list of the options.
+        out: output file
 
     """
-    walk_directory = current_walk[0]
+    walk_directory = os.path.normpath(current_walk[0])
     walk_files = current_walk[2]
     for walk_file in walk_files:
+        walk_file = os.path.normpath(walk_file)
         for template_linter in template_linters:
             results = template_linter.process_file(walk_directory, walk_file)
-            if results is not None:
-                results.print_results(options)
+            if template_linter.supports_includes():
+                for include in results.includes:
+                    include_results = template_linter.process_file(
+                        include['directory'],
+                        include['file_name']
+                    )
+                    results.resolve_include(include, include_results)
+            results.print_results(options, out)
 
 
-def _process_os_walk(starting_dir, template_linters, options):
+def _process_os_walk(starting_dir, template_linters, options, out):
     """
     For each linter, lints all the directories in the starting directory.
 
@@ -830,10 +1066,11 @@ def _process_os_walk(starting_dir, template_linters, options):
         starting_dir: The initial directory to begin the walk.
         template_linters: A list of linting objects.
         options: A list of the options.
+        out: output file
 
     """
     for current_walk in os.walk(starting_dir):
-        _process_current_walk(current_walk, template_linters, options)
+        _process_current_walk(current_walk, template_linters, options, out)
 
 
 def main():
@@ -842,25 +1079,28 @@ def main():
 
     Prints all of the violations.
     """
+    out = sys.stdout
+
     #TODO: Use click
     if '--help' in sys.argv:
-        print "Check that templates are safe."
-        print "Options:"
-        print "   --quiet    Just display the filenames with violations."
-        print
-        print "Rules:"
+        print("Check that templates are safe.", file=out)
+        print("Options:", file=out)
+        print("   --quiet    Just display the filenames that have violations.", file=out)
+        print("", file=out)
+        print("Rules:", file=out)
         for rule in Rules.__members__.values():
-            print "  {0[0]}: {0[1]}".format(rule.value)
+            print("  {0[0]}: {0[1]}".format(rule.value), file=out)
         return
 
     is_quiet = '--quiet' in sys.argv
+    # TODO --file=...
 
     options = {
         'is_quiet': is_quiet,
     }
 
     template_linters = [MakoTemplateLinter(), UnderscoreTemplateLinter()]
-    _process_os_walk('.', template_linters, options)
+    _process_os_walk('.', template_linters, options, out)
 
 
 if __name__ == "__main__":
