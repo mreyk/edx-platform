@@ -250,14 +250,12 @@ class TestMakoTemplateLinter(TestCase):
                 ${x | n, dump_html_escaped_json}
                 ${x | n, dump_js_escaped_json}
                 "${x-with-quotes | n, js_escaped_string}"
-                '${x-with-quotes | n, js_escaped_string}'
-                ${x-missing-quotes | n, js_escaped_string}
             </script>
         """)
 
         linter._check_mako_file_is_safe(mako_template, results)
 
-        self.assertEqual(len(results.violations), 6)
+        self.assertEqual(len(results.violations), 5)
         self.assertEqual(results.violations[0].rule, Rules.mako_invalid_js_filter)
         self.assertEqual(results.violations[0].expression['expression'], "${x}")
         self.assertEqual(results.violations[1].rule, Rules.mako_unparsable_expression)
@@ -269,8 +267,6 @@ class TestMakoTemplateLinter(TestCase):
         self.assertEqual(results.violations[3].expression['expression'], "${x | h}")
         self.assertEqual(results.violations[4].rule, Rules.mako_invalid_js_filter)
         self.assertEqual(results.violations[4].expression['expression'], "${x | n, dump_html_escaped_json}")
-        self.assertEqual(results.violations[5].rule, Rules.mako_js_string_missing_quotes)
-        self.assertEqual(results.violations[5].expression['expression'], "${x-missing-quotes | n, js_escaped_string}")
 
     def test_check_mako_expressions_in_require_js(self):
         """
@@ -290,11 +286,9 @@ class TestMakoTemplateLinter(TestCase):
 
         linter._check_mako_file_is_safe(mako_template, results)
 
-        self.assertEqual(len(results.violations), 2)
+        self.assertEqual(len(results.violations), 1)
         self.assertEqual(results.violations[0].rule, Rules.mako_invalid_js_filter)
         self.assertEqual(results.violations[0].expression['expression'], "${x}")
-        self.assertEqual(results.violations[1].rule, Rules.mako_js_string_missing_quotes)
-        self.assertEqual(results.violations[1].expression['expression'], "${x | n, js_escaped_string}")
 
     @data(
         {'media_type': 'text/javascript', 'expected_violations': 0},

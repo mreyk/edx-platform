@@ -162,7 +162,6 @@ class Rules(Enum):
         'Replace deprecated display_name_with_default_escaped with display_name_with_default.'
     )
     mako_invalid_js_filter = ('mako-invalid-js-filter', 'The expression is using an invalid filter in a JavaScript context.')
-    mako_js_string_missing_quotes = ('mako-js-string-missing-quotes', 'An expression using the js_escape_string filter must have surrounding quotes.')
 
     underscore_not_escaped = ('underscore-not-escaped', 'Expressions should be escaped using <%- expression %>.')
 
@@ -716,14 +715,7 @@ class MakoTemplateLinter(object):
                 pass
             elif (len(filters) == 2) and (filters[0] == 'n') and (filters[1] == 'js_escaped_string'):
                 # {x | n, js_escaped_string} is valid, if surrounded by quotes
-                prior_character = mako_template[expression['start_index'] - 1]
-                next_character = mako_template[expression['end_index'] + 1]
-                has_surrounding_quotes = (prior_character == '\'' and next_character == '\'') or \
-                    (prior_character == '"' and next_character == '"')
-                if not has_surrounding_quotes:
-                    results.violations.append(ExpressionRuleViolation(
-                        Rules.mako_js_string_missing_quotes, expression
-                    ))
+                pass
             else:
                 results.violations.append(ExpressionRuleViolation(
                     Rules.mako_invalid_js_filter, expression
