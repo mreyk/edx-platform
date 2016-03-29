@@ -3,9 +3,9 @@
  * It is expected to be backed by a Group model.
  */
 define([
-    'js/views/baseview', 'underscore'
+    'js/views/baseview'
 ],
-function(BaseView, _) {
+function(BaseView) {
     'use strict';
     var ExperimentGroupEditView = BaseView.extend({
         tagName: 'li',
