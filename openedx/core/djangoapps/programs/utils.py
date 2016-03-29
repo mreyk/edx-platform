@@ -1,7 +1,8 @@
 """Helper functions for working with Programs."""
-from django.conf import settings
 import logging
 from urlparse import urljoin
+
+from django.conf import settings
 
 from openedx.core.djangoapps.programs.models import ProgramsApiConfig
 from openedx.core.lib.edx_api_utils import get_edx_api_data
@@ -105,33 +106,34 @@ def get_programs_for_credentials(user, programs_credentials):
     return certificate_programs
 
 
-def get_user_enrolled_programs(user, course_keys):
-    '''
-    The helper function that takes in user enrollment information,
-    and returns the list of programs the user is enrolled in.
+def get_engaged_programs(user, enrollments):
+    """Derive a list of programs in which the given user is engaged.
+
     Arguments:
-        user (User): The user to authenticate as for requesting programs.
-        course_key (list): List of courses keys of courses user is enrolled in
+        user (User): The user for which to find programs.
+        enrollments (list): The user's enrollments.
 
     Returns:
-        list, contains programs enrolled
-    '''
-    # Get the programs by courses dictionary from the get_programs_for_dashboard function call
-    programs_dict = get_programs_for_dashboard(
-        user,
-        course_keys)
-    program_list = []
-    # Extract all the programs from the dictionary above
-    for programs_by_courses in programs_dict.values():
-        for program in programs_by_courses:
-            #Remove duplicate programs through the if check below
-            if program not in program_list:
-                program_list.append(program)
+        list of serialized programs, ordered by most recent enrollment (?)
+    """
+    programs = get_programs(user)
+    # enrollment.course_id is really a course key.
+    course_ids = [unicode(enrollment.course_id) for enrollment in enrollments]
 
-    for program in program_list:
-        program['marketing_url'] = urljoin(
-            settings.MKTG_URLS.get('ROOT'),
-            'xseries' + '/{}'
-        ).format(program['marketing_slug'])
+    engaged_programs = []
+    for program in programs:
+        for course_code in program['course_codes']:
+            for run in course_code['run_modes']:
+                course_id = run['course_key']
 
-    return program_list
+                if course_id in course_ids:
+                    if program not in engaged_programs:
+                        engaged_programs += program
+
+    # for program in program_list:
+    #     program['marketing_url'] = urljoin(
+    #         settings.MKTG_URLS.get('ROOT'),
+    #         'xseries' + '/{}'
+    #     ).format(program['marketing_slug'])
+
+    return engaged_programs

@@ -126,7 +126,7 @@ from notification_prefs.views import enable_notifications
 from openedx.core.djangoapps.credentials.utils import get_user_program_credentials
 from openedx.core.djangoapps.credit.email_utils import get_credit_provider_display_names, make_providers_strings
 from openedx.core.djangoapps.user_api.preferences import api as preferences_api
-from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
+# from openedx.core.djangoapps.programs.utils import get_programs_for_dashboard
 
 
 log = logging.getLogger("edx.student")
