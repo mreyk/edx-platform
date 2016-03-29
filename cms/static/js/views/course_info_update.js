@@ -31,7 +31,6 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             var self = this;
             this.collection.each(function (update, index) {
                 try {
-                    debugger;
                     CourseInfoHelper.changeContentToPreview(
                         update, 'content', self.options['base_asset_url']);
                     // push notification is always disabled for existing updates
@@ -46,7 +45,7 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             return this;
         },
 
-        collectionSelectorMap: function() {
+        collectionSelector: function() {
             // This is actually independent of index? TODO - figure out if this is always true
             return "course-update-list .new-update-form";
         },
@@ -110,7 +109,8 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             event.preventDefault();
             var targetModel = this.eventModel(event);
             targetModel.set({
-                date : this.dateEntry(event).val(),
+                // translate short-form date (for input) into long form date (for display)
+                date : $.datepicker.formatDate("MM d, yy", new Date(this.dateEntry(event).val())),
                 content : this.$codeMirror.getValue(),
                 push_notification_selected : this.push_notification_selected(event)
             });
@@ -138,7 +138,6 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
         },
 
         onCancel: function(event) {
-            debugger;
             event.preventDefault();
             // Since we're cancelling, the model should be using it's previous attributes
             var targetModel = this.eventModel(event);
@@ -158,6 +157,8 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             $(this.editor(event)).show();
             var $textArea = this.$currentPost.find(".new-update-content").first();
             var targetModel = this.eventModel(event);
+            // translate long-form date (for viewing) into short-form date (for input)
+            $(this.editor(event)).find('.date').val($.datepicker.formatDate("mm/dd/yy", targetModel.get('date')))
             this.$codeMirror = CourseInfoHelper.editWithCodeMirror(
                 targetModel, 'content', self.options['base_asset_url'], $textArea.get(0));
 

@@ -5,7 +5,7 @@ function($, date, TriggerChangeEventOnEnter) {
         var div;
         if (typeof index !== "undefined" && view.hasOwnProperty("collection")) {
             cacheModel = view.collection.models[index];
-            div = view.$el.find('#' + view.collectionSelectorMap(index));
+            div = view.$el.find('#' + view.collectionSelector());
         } else {
             cacheModel = view.model;
             div = view.$el.find('#' + view.fieldToSelectorMap[fieldName]);
