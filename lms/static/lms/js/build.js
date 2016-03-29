@@ -33,8 +33,7 @@
             'teams/js/teams_tab_factory',
             'support/js/certificates_factory',
             'support/js/enrollment_factory',
-            'js/bookmarks/bookmarks_factory',
-            'js/vendor/draggabilly'
+            'js/bookmarks/bookmarks_factory'
         ]),
 
         /**
