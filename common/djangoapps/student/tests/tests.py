@@ -241,7 +241,6 @@ class DashboardTest(ModuleStoreTestCase):
             self.assertContains(response, 'class="course professional"')
         else:
             self.assertContains(response, 'class="course {0}"'.format(mode))
-        print response
         self.assertContains(response, value)
 
     @patch.dict("django.conf.settings.FEATURES", {'ENABLE_VERIFIED_CERTIFICATES': True})
