@@ -29,14 +29,15 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
             // remove and then add all children
             $(updateEle).empty();
             var self = this;
-            this.collection.each(function (index, update) {
+            this.collection.each(function (update, index) {
                 try {
+                    debugger;
                     CourseInfoHelper.changeContentToPreview(
                         update, 'content', self.options['base_asset_url']);
                     // push notification is always disabled for existing updates
                     var newEle = self.template({ updateModel : update, push_notification_enabled : false });
                     $(updateEle).append(newEle);
-                    DateUtils.setupDatePicker("date", this, index);
+                    DateUtils.setupDatePicker("date", self, index);
                 } catch (e) {
                     // ignore
                 }
@@ -137,12 +138,14 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
         },
 
         onCancel: function(event) {
+            debugger;
             event.preventDefault();
-            // change editor contents back to model values and hide the editor
-            $(this.editor(event)).hide();
-            // If the model was never created (user created a new update, then pressed Cancel),
-            // we wish to remove it from the DOM.
+            // Since we're cancelling, the model should be using it's previous attributes
             var targetModel = this.eventModel(event);
+            targetModel.set(targetModel.previousAttributes());
+            // Hide the editor
+            $(this.editor(event)).hide();
+            // targetModel will be lacking an id if it was newly created
             this.closeEditor(!targetModel.id);
         },
 
@@ -215,6 +218,8 @@ define(["js/views/validation", "codemirror", "js/models/course_update",
         closeEditor: function(removePost) {
             var targetModel = this.collection.get(this.$currentPost.attr('name'));
 
+            // If the model was never created (user created a new update, then pressed Cancel),
+            // we wish to remove it from the DOM.
             if(removePost) {
                 this.$currentPost.remove();
             }
