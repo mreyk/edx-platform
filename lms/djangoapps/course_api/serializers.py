@@ -55,9 +55,13 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     start = serializers.DateTimeField()
     start_display = serializers.CharField()
     start_type = serializers.CharField()
+    pacing = serializers.SerializerMethodField()
 
     # 'course_id' is a deprecated field, please use 'id' instead.
     course_id = serializers.CharField(source='id', read_only=True)
+
+    def get_pacing(self, course_overview):
+        return 'self' if course_overview.self_paced else 'instructor'
 
     def get_blocks_url(self, course_overview):
         """
