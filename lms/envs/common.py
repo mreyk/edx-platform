@@ -1012,7 +1012,7 @@ CC_PROCESSOR = {
     }
 }
 
-# Setting for PAID_COURSE_REGISTRATION, DOES NOT AFFECT VERIFIED STUDENTS
+# Setting for PAID_COURSE_REGISTRATION
 PAID_COURSE_REGISTRATION_CURRENCY = ['usd', '$']
 
 # Members of this group are allowed to generate payment reports

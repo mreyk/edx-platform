@@ -383,7 +383,7 @@ def _payment_accepted(order_id, auth_amount, currency, decision):
         return {
             'accepted': False,
             'amt_charged': 0,
-            'currency': 'usd',
+            'currency': settings.PAID_COURSE_REGISTRATION_CURRENCY[0],
             'order': order
         }
 
