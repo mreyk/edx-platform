@@ -5,7 +5,7 @@ Unit tests for instructor.enrollment methods.
 
 import json
 import mock
-from mock import patch
+from mock import Mock, patch
 from abc import ABCMeta
 from courseware.models import StudentModule
 from django.conf import settings
@@ -23,6 +23,7 @@ from student.roles import CourseCcxCoachRole
 from student.tests.factories import (
     AdminFactory
 )
+import instructor
 from instructor.enrollment import (
     EmailEnrollmentState,
     enroll_email,
@@ -31,6 +32,7 @@ from instructor.enrollment import (
     send_beta_role_email,
     unenroll_email,
     render_message_to_string,
+    send_mail_to_student,
 )
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
@@ -222,6 +224,7 @@ class TestInstructorEnrollDB(TestEnrollmentChangeBase):
 
 
 @attr(shard=1)
+@patch('instructor.enrollment.send_mail_to_student', Mock(return_value=0))
 class TestInstructorUnenrollDB(TestEnrollmentChangeBase):
     """ Test instructor.enrollment.unenroll_email """
     def test_unenroll(self):
@@ -299,6 +302,78 @@ class TestInstructorUnenrollDB(TestEnrollmentChangeBase):
         action = lambda email: unenroll_email(self.course_key, email)
 
         return self._run_state_change_test(before_ideal, after_ideal, action)
+
+    @patch('instructor.enrollment.send_mail_to_student')
+    def test_unenroll_send_mail(self, send_mail_to_student_enrollment):
+        before_ideal = SettableEnrollmentState(
+                user=True,
+                enrollment=True,
+                allowed=False,
+                auto_enroll=False
+            )
+
+        after_ideal = SettableEnrollmentState(
+                user=True,
+                enrollment=False,
+                allowed=False,
+                auto_enroll=False
+            )
+
+        email_students = True
+        email_params = {}
+        action = lambda email: unenroll_email(self.course_key, email, email_students, email_params)
+
+        aux = self._run_state_change_test_mail(before_ideal, after_ideal, action)
+        self.assertFalse(send_mail_to_student_enrollment.called)
+        return self.assertFalse(send_mail_to_student_enrollment.call_count, 0)
+
+    @patch('instructor.enrollment.send_mail_to_student')
+    def test_unenroll_notenrolled_send_mail(self, send_mail_to_student_enrollment):
+        before_ideal = SettableEnrollmentState(
+                user=True,
+                enrollment=False,
+                allowed=False,
+                auto_enroll=False
+            )
+
+        after_ideal = SettableEnrollmentState(
+                user=True,
+                enrollment=False,
+                allowed=False,
+                auto_enroll=False
+            )
+
+        email_students = True
+        email_params = {}
+        action = lambda email: unenroll_email(self.course_key, email, email_students, email_params)
+
+        aux = self._run_state_change_test(before_ideal, after_ideal, action)
+        self.assertFalse(send_mail_to_student_enrollment.called)
+        return self.assertFalse(send_mail_to_student_enrollment.call_count, 0)
+
+    @patch('instructor.enrollment.send_mail_to_student')
+    def test_unenroll_disallow_send_mail(self, send_mail_to_student_enrollment):
+        before_ideal = SettableEnrollmentState(
+                user=False,
+                enrollment=False,
+                allowed=True,
+                auto_enroll=True
+            )
+
+        after_ideal = SettableEnrollmentState(
+                user=False,
+                enrollment=False,
+                allowed=False,
+                auto_enroll=False
+            )
+
+        email_students=True
+        email_params={}
+        action = lambda email: unenroll_email(self.course_key, email, email_students, email_params)
+
+        aux = self._run_state_change_test(before_ideal, after_ideal, action)
+        self.assertTrue(send_mail_to_student_enrollment.called)
+        return self.assertEqual(send_mail_to_student_enrollment.call_count, 1)
 
 
 @attr(shard=1)
